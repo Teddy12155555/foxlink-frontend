@@ -1,6 +1,5 @@
-import { styled } from '@mui/material/styles';
 import { Button } from '@mui/material';
-import React, { useState } from "react";
+import React from "react";
 import foxlinkLogo from '../assets/foxlink_logo.png';
 
 export const Logo = ({handler}) => {

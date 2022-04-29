@@ -1,19 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Box, Divider, Drawer } from '@mui/material';
 import { ChartBar as StatusIcon } from '../icons/chart-bar';
 import { Layout as LayoutIcon } from '../icons/layout';
 import { QRCode as QRCodeIcon } from '../icons/qrcode';
 import { Info as InfoIcon } from '../icons/info';
 import { Device as DeviceIcon } from '../icons/device';
-
-import { Selector as SelectorIcon } from '../icons/selector';
-
-
-import { UserAdd as UserAddIcon } from '../icons/user-add';
-import { Users as UsersIcon } from '../icons/users';
-import { XCircle as XCircleIcon } from '../icons/x-circle';
 import { Logo } from './logo';
 
 import { DashboardNavbar } from './dashboard-navbar';

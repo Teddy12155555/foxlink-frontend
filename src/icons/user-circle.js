@@ -1,5 +1,5 @@
 import { createSvgIcon } from '@mui/material/utils';
-import React, { useState } from "react";
+import React from "react";
 export const UserCircle = createSvgIcon(
   <svg
     viewBox="0 0 20 20"

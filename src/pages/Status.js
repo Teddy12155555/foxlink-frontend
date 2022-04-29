@@ -1,21 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { 
-    Button,
     Box,
-    Container,
-    Navbar,
-    Nav,
-    NavDropdown,
-    Form,
-    Card,
-    CardContent,
-    CardActions,
-    Typography,
     Grid,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails
  } from '@mui/material';
  import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -49,21 +36,47 @@ const darkTheme = createTheme({
 });
 
 export default function Status({authed, ...rest}) {
-    const [value, setvalue] = useState(0);
-    const [statusData, setData] =useState({});
+    const UPDATE_SECOND = 5;
+    const _isMounted = useRef(true);
+
+    const [statusData, setData] = useState({});
+    const [timerId, setTimerId] = useState();
+    const [updateCount, setUpdateCount] = useState(UPDATE_SECOND);
+
     useEffect(()=> {
-        apiStatistics(null).then(res=>{
-            setData(res.data);
-        })
+      updatedata();
+      setTimerId(startCount());
+
+      return () => {
+        window.clearInterval(timerId);
+      };
     }, [])
-    const bull = (
-        <Box
-          component="span"
-          sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-        >
-          •
-        </Box>
-    );
+
+    useEffect(() => {
+      if(updateCount == 0){
+        stopCount(timerId);
+        setUpdateCount(UPDATE_SECOND);
+        setTimerId(startCount);
+      }
+
+      return () => {
+        window.clearInterval(timerId);
+      };
+    }, [updateCount])
+
+    const startCount = () => {
+      return window.setInterval(() => 
+        setUpdateCount(updateCount => updateCount - 1) , 1000);
+    }
+    const stopCount = timerId => {
+      window.clearInterval(timerId);
+      updatedata();
+    }
+    const updatedata = () => {
+      apiStatistics(null).then(res=>{
+        setData(res.data);
+    })
+    }
 
     return (
       <ThemeProvider theme={darkTheme}>

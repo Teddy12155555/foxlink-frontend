@@ -1,8 +1,8 @@
 import { Box, Button, ListItem } from '@mui/material';
-import React, { useState } from "react";
+import React from "react";
 export const NavItem = (props) => {
   const { index, icon, title, globalIdx, setIdx, ...others } = props;
-  const active = index == globalIdx ? true : false;
+  const active = index === globalIdx ? true : false;
 
   const handleClick = () => {
     setIdx(index);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Avatar, Box, Card, CardContent, Grid, LinearProgress, Typography } from '@mui/material';
 import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';

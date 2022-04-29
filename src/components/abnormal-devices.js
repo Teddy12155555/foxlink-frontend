@@ -13,7 +13,7 @@ export function AbnormalDevices({list_data, ...rest}) {
           return (
             <Card sx={{m:1
             }}
-            key={device.mission_id}>
+            key={device.device_id}>
               <CardContent>
                   <Typography
                       color="textSecondary"
