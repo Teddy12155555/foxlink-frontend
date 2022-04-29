@@ -21,7 +21,7 @@ export default function Homepage() {
     const DEBUG = false;
     const [token, setToken] = useState("");
     const [authed, setAuth] = useState(DEBUG);
-    const [userName, setUser] = useState("");
+    const [user, setUser] = useState({});
     // page conditional render
     const [pageIdx, setIdx] = useState(-1);
 
@@ -83,7 +83,9 @@ export default function Homepage() {
 
     const conditionalRender = (idx) => {
         if(idx == -1){
-            return (<AllStatus authed={authed} />);
+            return (
+            <AllStatus authed={authed} />
+            );
         } else if(idx == 3){
             return(<Status authed={authed} />);
         } else if(idx == 4){
@@ -107,7 +109,7 @@ export default function Homepage() {
             {
                 authed ? 
                 (
-                    <DashboardLayout idx={pageIdx} setIdx={setIdx} username={userName}>
+                    <DashboardLayout idx={pageIdx} setIdx={setIdx} userinfo={user}>
                         {
                             <Box
                                 component="main"

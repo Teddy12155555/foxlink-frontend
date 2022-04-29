@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
     Box,
@@ -14,9 +12,9 @@ import {
     TableRow,
     createTheme,
     ThemeProvider,
-    Divider
+    Divider,
     } from '@mui/material';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+
 import { SeverityPill } from '../components/severity-pill';
 
 import {apiWorkStatus} from "../api.js";
@@ -65,13 +63,18 @@ const darkTheme = createTheme({
   });
 
 export default function AllStatus({authed, ...rest}) {
-    const [statusData, setData] =useState([]);
+    const [statusData, setData] = useState([]);
+    const [condition, setCondition] = useState(false);
+
     useEffect(()=> {
         updataData();
-        //return ()
+        return () => {
+            
+        }
     }, [])
     
     const updataData = () => {
+        //setCondition(true);
         apiWorkStatus(null).then(res=>{
             setData(parseData(res.data));
         })
@@ -164,7 +167,7 @@ export default function AllStatus({authed, ...rest}) {
                                 </TableCell>
                             </TableRow>
                             ))}
-                        </TableBody>
+                                </TableBody>
                         </Table>
                     </Box>
                 </PerfectScrollbar>

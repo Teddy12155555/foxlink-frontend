@@ -26,13 +26,13 @@ export const Rate = ({rate, ...rest}) => (
             color="textPrimary"
             variant="h4"
           >
-            {rate * 1000}%
+            {rate}%
           </Typography>
         </Grid>
         <Grid item>
           <Avatar
             sx={{
-              backgroundColor: 'warning.main',
+              backgroundColor: 'secondary.main',
               height: 56,
               width: 56
             }}
@@ -43,7 +43,7 @@ export const Rate = ({rate, ...rest}) => (
       </Grid>
       <Box sx={{ pt: 3 }}>
         <LinearProgress
-          value={rate * 1000}
+          value={rate}
           variant="determinate"
         />
       </Box>

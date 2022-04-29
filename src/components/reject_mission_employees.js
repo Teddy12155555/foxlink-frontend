@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
+
 import { Avatar, Box, Card, CardContent, Grid, 
   Typography, Dialog, DialogTitle, DialogContent, Button, DialogActions
 } from '@mui/material';
-import ReportGmailerrorredSharpIcon from '@mui/icons-material/ReportGmailerrorredSharp';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-export function Emergency({list_data, ...rest}) {
+export function RejectMissionEmployees({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
-        mission => {
+        employee => {
           return (
             <Card sx={{m:1
-            }} key={mission.mission_id}>
+            }} key={employee.username}>
               <CardContent>
                   <Typography
                       color="textSecondary"
@@ -19,40 +20,13 @@ export function Emergency({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    任務 ID : {mission.mission_id}
+                    ID : {employee.username}
                   </Typography>
                   <Typography>
-                    裝置 ID : {mission.device_id}
+                    姓名 : {employee.full_name}
                   </Typography>
                   <Typography>
-                  category : {mission.category}
-                  </Typography>
-                  <Typography>
-                    說明 : {mission.description}
-                  </Typography>
-                  <Typography>
-                  assignees : {
-                    mission.assignees && 
-                    mission.assignees.map(user=>{
-                      return (
-                        <Card key={user.username}>
-                          <CardContent>
-                          <Typography
-                              color="textSecondary"
-                              gutterBottom
-                              variant="overline"
-                              fontSize="small"
-                          >
-                            ID : {user.username}
-                          </Typography>
-                          <Typography fontSize="small">
-                            full_name : {user.full_name}
-                          </Typography>
-                          </CardContent>
-                        </Card>
-                      )
-                    })
-                  }
+                    拒絕總數 : {employee.count}
                   </Typography>
               </CardContent>
             </Card>
@@ -88,7 +62,7 @@ export function Emergency({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            緊急通報
+            拒絕任務總數的員工排名
           </Typography>
           <Typography
             color="textPrimary"
@@ -100,12 +74,12 @@ export function Emergency({list_data, ...rest}) {
         <Grid item>
           <Avatar
             sx={{
-              backgroundColor: 'error.main',
+              backgroundColor: 'warning.main',
               height: 56,
               width: 56
             }}
           >
-            <ReportGmailerrorredSharpIcon />
+            <CancelIcon />
           </Avatar>
         </Grid>
       </Grid>
@@ -120,7 +94,7 @@ export function Emergency({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Current Emergency Mission"}
+          {"Top Most Reject Mission Employees"}
         </DialogTitle>
         <DialogContent>
           {

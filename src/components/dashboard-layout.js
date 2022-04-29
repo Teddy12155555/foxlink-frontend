@@ -16,7 +16,7 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
 }));
 
 export const DashboardLayout = (props) => {
-  const { children , idx, setIdx, username} = props;
+  const { children , idx, setIdx, userinfo} = props;
   return (
     <>
       <DashboardLayoutRoot>
@@ -32,7 +32,7 @@ export const DashboardLayout = (props) => {
         </Box>
       </DashboardLayoutRoot>
       <DashboardSidebar idx={idx} setIdx={setIdx}/>
-      <DashboardNavbar username={username} />
+      <DashboardNavbar userinfo={userinfo} />
     </>
   );
 };

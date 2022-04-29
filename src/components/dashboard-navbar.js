@@ -15,41 +15,37 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   boxShadow: '0px 1px 4px rgba(100, 116, 139, 0.12)'
 }));
 
-export function DashboardNavbar({username, ...rest}){
+export function DashboardNavbar({userinfo, ...rest}){
   return (
     <>
-      <DashboardNavbarRoot
+    {
+      userinfo && <DashboardNavbarRoot
+      sx={{
+        left: {
+          lg: 280
+        },
+        width: {
+          lg: 'calc(100% - 280px)'
+        }
+      }}
+      >
+      <Toolbar
+        disableGutters
         sx={{
-          left: {
-            lg: 280
-          },
-          width: {
-            lg: 'calc(100% - 280px)'
-          }
+          minHeight: 64,
+          left: 0,
+          px: 2
         }}
-        >
-        <Toolbar
-          disableGutters
-          sx={{
-            minHeight: 64,
-            left: 0,
-            px: 2
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }} />
-          <Tooltip title="Logged In !">
-            <IconButton sx={{ ml: 1 }}>
-              <Badge
-                badgeContent={4}
-                color="primary"
-                variant="dot"
-              >
-                <Typography>
-                  {username}
-                </Typography>
-              </Badge>
-            </IconButton>
-          </Tooltip>
+      >
+        <Box sx={{ flexGrow: 1 }} />
+        <Tooltip title={`You are ${userinfo.name} !`}>
+          <IconButton sx={{ ml: 1 }}>
+            <Typography>
+                {userinfo.name}
+            </Typography>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={`Level ${userinfo.level}`}>
           <Avatar
             sx={{
               height: 40,
@@ -59,8 +55,10 @@ export function DashboardNavbar({username, ...rest}){
           >
             <UserCircleIcon fontSize="small" />
           </Avatar>
-        </Toolbar>
-      </DashboardNavbarRoot>
+        </Tooltip>
+      </Toolbar>
+    </DashboardNavbarRoot>
+    }
     </>
   );
 };

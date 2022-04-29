@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { Box, Button, Container, Card, CardHeader, TextField, Typography, Grid } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -24,19 +24,16 @@ import {apiUserLogin, apiUserLevel} from "../api.js";
   });
 
 const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) => {
+    const _isMounted = useRef(true);
+
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
-  const [islogin, setLogin] = useState(false);
 
-  const handleClick = () => {
-    setAuth(true);
-    setLogin(true);
-    setOpen(true);
-  };
-
-  function handleSubmit(event) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    return () => { // ComponentWillUnmount in Class Component
+        _isMounted.current = false;
+    }
+  }, []);
 
   function handleOnClick(){
         let account = document.getElementById('account').value;
@@ -48,19 +45,24 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
         let data = `grant_type=&username=${account}&password=${password}&scope=&client_id=&client_secret=`
         apiUserLogin(data)
         .then(res=> {
-        if(res.status == 200){
-                let tk = res.data['access_token'];
-                setToken(tk);
-                apiUserLevel(tk).then(res2=> {
-                    if(res2.data['is_admin']){
-                        //setLogin(true);
-                        setUser(res2.data['username']);
-                        handleClick();
-                    }
-                }).catch(err =>{
-                    console.log(err);
-                    alert("權限不足");
-                })
+            if (_isMounted.current){
+                if(res.status == 200){
+                    let tk = res.data['access_token'];
+                    setToken(tk);
+                    apiUserLevel(tk).then(res2=> {
+                        if(res2.data['level'] >= 2){
+                            setUser({
+                                name: res2.data['username'],
+                                level: res2.data['level']
+                            });
+                            setAuth(true);
+                            setOpen(true);
+                        }
+                    }).catch(err =>{
+                        console.log(err);
+                        alert("權限不足");
+                    })
+                }
             }
         })
         .catch(err=> {

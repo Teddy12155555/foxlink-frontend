@@ -29,7 +29,7 @@ const darkTheme = createTheme({
     },
   });
 
-  
+
 
 export default function QrcodeDownload({token, ...rest}) {
     const [downloading, setDownload] = useState(false);
@@ -38,23 +38,16 @@ export default function QrcodeDownload({token, ...rest}) {
     const [selectItem, setSelectItem] = useState("");
 
     let displayWorkShop = "";
+
     useEffect(()=> {
         apiWorkShopList(token).then(res => {
             setSelectItem(res.data.map(name=>{
-                return(<MenuItem value={name}>{name}</MenuItem>)
+                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
             }))
         }).catch(err => {
 
         });
     }, [])
-
-    const str2bytes = (str) => {
-        var bytes = new Uint8Array(str.length);
-        for (var i=0; i<str.length; i++) {
-            bytes[i] = str.charCodeAt(i);
-        }
-        return bytes;
-    }
 
     const handleChange = (event) => {
         setWorkshop(event.target.value)
@@ -70,8 +63,7 @@ export default function QrcodeDownload({token, ...rest}) {
             }
             apiQRCode(data)
             .then(res => {
-                    let blob = new Blob([str2bytes(res.data)], {type: "application/zip"});
-                    saveAs(blob, 'qrcode.zip');
+                    saveAs(res.data, `${workshop}.zip`);
                     setDownload(false);
                 }
             ).catch(
@@ -105,7 +97,7 @@ export default function QrcodeDownload({token, ...rest}) {
                     }}
                     >   
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            請輸入要下載的 Workshop Name (Ex. 第九車間)
+                            請選取要下載的 Workshop Name (Ex. 第九車間)
                         </Typography>
                     </Box>  
                     <Box

@@ -27,7 +27,7 @@ export const DashboardSidebar = ({idx, setIdx}) => {
         {
           index: 3,
           icon: (<StatusIcon fontSize="small" />),
-          title: '狀態總覽',
+          title: '統計資料',
           active: false
         },
         {

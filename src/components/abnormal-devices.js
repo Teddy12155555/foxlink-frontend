@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
+
 import { Avatar, Box, Card, CardContent, Grid, 
   Typography, Dialog, DialogTitle, DialogContent, Button, DialogActions
 } from '@mui/material';
-import ReportGmailerrorredSharpIcon from '@mui/icons-material/ReportGmailerrorredSharp';
+import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';
 
-export function Emergency({list_data, ...rest}) {
+export function AbnormalDevices({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
-        mission => {
+        device => {
           return (
             <Card sx={{m:1
-            }} key={mission.mission_id}>
+            }}
+            key={device.mission_id}>
               <CardContent>
                   <Typography
                       color="textSecondary"
@@ -19,21 +21,18 @@ export function Emergency({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    任務 ID : {mission.mission_id}
+                    裝置 ID : {device.device_id}
                   </Typography>
                   <Typography>
-                    裝置 ID : {mission.device_id}
+                  category : {device.category}
                   </Typography>
                   <Typography>
-                  category : {mission.category}
+                  訊息 : {device.message}
                   </Typography>
                   <Typography>
-                    說明 : {mission.description}
-                  </Typography>
-                  <Typography>
-                  assignees : {
-                    mission.assignees && 
-                    mission.assignees.map(user=>{
+                  top_great_assignees : {
+                    device.top_great_assignees && 
+                    device.top_great_assignees.map(user=>{
                       return (
                         <Card key={user.username}>
                           <CardContent>
@@ -47,6 +46,9 @@ export function Emergency({list_data, ...rest}) {
                           </Typography>
                           <Typography fontSize="small">
                             full_name : {user.full_name}
+                          </Typography>
+                          <Typography fontSize="small">
+                          duration : {user.duration}
                           </Typography>
                           </CardContent>
                         </Card>
@@ -88,7 +90,7 @@ export function Emergency({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            緊急通報
+            機臺異常處理時間/次數
           </Typography>
           <Typography
             color="textPrimary"
@@ -100,12 +102,12 @@ export function Emergency({list_data, ...rest}) {
         <Grid item>
           <Avatar
             sx={{
-              backgroundColor: 'error.main',
+              backgroundColor: 'info.main',
               height: 56,
               width: 56
             }}
           >
-            <ReportGmailerrorredSharpIcon />
+            <InsertChartIcon />
           </Avatar>
         </Grid>
       </Grid>
@@ -120,7 +122,7 @@ export function Emergency({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Current Emergency Mission"}
+          {"Top Abnormal Devices"}
         </DialogTitle>
         <DialogContent>
           {

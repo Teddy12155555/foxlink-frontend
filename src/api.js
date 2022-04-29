@@ -45,14 +45,16 @@ export const apiWorkShopList = (token) => baseRequest.get('/workshop/list', {
   }
 });
 
+
 export const apiQRCode = (data) => baseRequest.get(`/workshop/qrcode?workshop_name=${data['name']}`, {
   headers:
     {
-        'accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'accept': 'application/x-zip-compressed',
         'Authorization' : `Bearer ${data['token']}`
-    }
+    },
+    responseType : 'blob'
 });
+
 
 export const apiEventbook = (data) => baseRequest.post('/migration/workshop-eventbook', data['file'], {
   headers:

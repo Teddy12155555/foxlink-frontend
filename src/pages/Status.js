@@ -17,12 +17,36 @@ import {
     AccordionSummary,
     AccordionDetails
  } from '@mui/material';
+ import { createTheme, ThemeProvider } from '@mui/material/styles';
+
  import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
  import { Rate } from "../components/rate.js";
  import { Emergency } from "../components/emergency.js";
+ import { CrashedDevices } from "../components/crashed-devices.js";
+ import { AcceptMissionEmployees } from "../components/accept-mission-employees.js";
+ import { RejectMissionEmployees } from "../components/reject_mission_employees.js";
+ import { AbnormalMissions } from "../components/abnormal-missions.js";
+ import { AbnormalDevices } from "../components/abnormal-devices.js";
 
 import {apiStatistics} from "../api.js";
+
+const darkTheme = createTheme({
+  palette: {
+      mode:'dark',
+      background: {
+          default: '#1a1e2b',
+          paper: '#1a1e2b',
+        },
+        text: {
+          primary: '#EDF2F7',
+        },
+        primary: {
+          // Purple and green play nicely together.
+          main: '#5048E5',
+      },
+  },
+});
 
 export default function Status({authed, ...rest}) {
     const [value, setvalue] = useState(0);
@@ -30,7 +54,6 @@ export default function Status({authed, ...rest}) {
     useEffect(()=> {
         apiStatistics(null).then(res=>{
             setData(res.data);
-            console.log(res.data);
         })
     }, [])
     const bull = (
@@ -43,178 +66,76 @@ export default function Status({authed, ...rest}) {
     );
 
     return (
+      <ThemeProvider theme={darkTheme}>
         <Grid
           container
           spacing={3}
         >
           <Grid
             item
-            lg={9}
-            sm={12}
-            xl={9}
-            xs={12}
+            lg={4}
           >
             <Emergency list_data={[]} rate={100}/>
           </Grid>
           <Grid
             item
-            xl={3}
-            lg={3}
-            sm={6}
-            xs={12}
+            lg={4}
           >
             {
-                statusData && statusData['login_users_percentage_this_week'] 
+                statusData['login_users_percentage_this_week'] 
                 && <Rate rate={statusData['login_users_percentage_this_week']} />
             }
           </Grid>
+          <Grid
+          item
+          lg={4}
+          >
+            {
+              statusData.devices_stats && 
+               <CrashedDevices list_data={statusData.devices_stats.most_frequent_crashed_devices}/>
+            }
+          </Grid>
+          <Grid
+          item
+          lg={4}
+          >
+            {
+              statusData.top_most_accept_mission_employees &&
+              <AcceptMissionEmployees list_data={statusData.top_most_accept_mission_employees}/>
+            }
+            
+          </Grid>
+          <Grid
+          item
+          lg={4}
+          >
+            {
+              statusData.top_most_reject_mission_employees &&
+              <RejectMissionEmployees list_data={statusData.top_most_reject_mission_employees}/>
+            }
+            
+          </Grid>
+          <Grid
+          item
+          lg={4}
+          >
+            {
+              statusData.devices_stats &&
+              <AbnormalMissions list_data={statusData.devices_stats.top_abnormal_missions_this_month}/>
+            }
+            
+          </Grid>
+          <Grid
+          item
+          lg={4}
+          >
+            {
+              statusData.devices_stats &&
+              <AbnormalDevices list_data={statusData.devices_stats.top_abnormal_devices}/>
+            }
+          </Grid>
         </Grid>
-        // <Container>
-        //     {
-        //         authed ? 
-        //         <div>
-        //             {/*緊急通報*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography color="red">緊急通報</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                 <Typography color="red">
-        //                 {
-        //                     statusData && statusData['current_emergency_mission']
-        //                 }
-        //                 </Typography>
-        //                 </AccordionDetails>
-        //             </Accordion>
+      </ThemeProvider>
 
-        //             {/*出勤比例*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography>出勤人數比例</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                 <Typography color="red">
-        //                 {
-        //                     statusData && statusData['login_users_percentage_this_week']
-        //                 }
-        //                 </Typography>
-        //                 </AccordionDetails>
-        //             </Accordion>
-
-        //             {/*受指派任務總數的前十員工排名*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography>受指派任務總數的前十員工排名</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                     <Typography color="text.secondary">
-        //                         User Name {bull} Full Name {bull} Count
-        //                     </Typography>
-        //                 </AccordionDetails>
-        //                 <AccordionDetails>
-        //                 {
-        //                     statusData['top_most_accept_mission_employees'] &&
-        //                     statusData['top_most_accept_mission_employees'].map(
-        //                         user => (
-        //                             <Typography color="blue">({user['username']} {bull} {user['full_name']} {bull} {user['count']})</Typography>))
-        //                 }
-                        
-        //                 </AccordionDetails>
-        //             </Accordion>
-
-        //             {/*拒絕指派任務總數的前三員工排名*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography>拒絕指派任務總數的前三員工排名</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                     <Typography color="text.secondary">
-        //                         User Name {bull} Full Name {bull} Count
-        //                     </Typography>
-        //                 </AccordionDetails>
-        //                 <AccordionDetails>
-        //                 {
-        //                     statusData['top_most_reject_mission_employees'] &&
-        //                     statusData['top_most_reject_mission_employees'].map(
-        //                         user => (
-        //                             <Typography color="blue">({user['username']} {bull} {user['full_name']} {bull} {user['count']})</Typography>))
-        //                 }
-                        
-        //                 </AccordionDetails>
-        //             </Accordion>
-
-        //             {/*機臺異常處理時間/次數 前十大*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography>機臺異常處理時間/次數 前十大</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                     <Typography color="text.secondary">
-        //                         Mission Id {bull} Category {bull} Description
-        //                     </Typography>
-        //                 </AccordionDetails>
-        //                 <AccordionDetails>
-        //                 {
-        //                     statusData['devices_stats'] && 
-        //                     statusData['devices_stats']['top_abnormal_missions_this_month'] &&
-        //                     statusData['devices_stats']['top_abnormal_missions_this_month'].map(
-        //                         mission => (
-        //                             <Typography color="blue">({mission['mission_id']} {bull} {mission['category']} {bull} {mission['description']})</Typography>))
-        //                 }
-                        
-        //                 </AccordionDetails>
-        //             </Accordion>
-
-        //             {/*前十大歷史機台異常任務*/}
-        //             <Accordion>
-        //                 <AccordionSummary
-        //                 expandIcon={<ExpandMoreIcon />}
-        //                 aria-controls="panel1a-content"
-        //                 id="panel1a-header"
-        //                 >
-        //                 <Typography>前十大歷史機台異常任務</Typography>
-        //                 </AccordionSummary>
-        //                 <AccordionDetails>
-        //                     <Typography color="text.secondary">
-        //                         Mission Id {bull} Device Id {bull} Category {bull} Description
-        //                     </Typography>
-        //                 </AccordionDetails>
-        //                 <AccordionDetails>
-        //                 {   statusData && statusData['devices_stats'] && 
-        //                     statusData['devices_stats']['top_abnormal_missions_this_month'] &&
-        //                     statusData['devices_stats']['top_abnormal_missions_this_month'].map(
-        //                         mission => (
-        //                             <Typography color="blue">({mission['mission_id']} {bull} {mission['device_id']} {bull} {mission['category']} {bull} {mission['description']})</Typography>))
-        //                 }
-                        
-        //                 </AccordionDetails>
-        //             </Accordion>
-                    
-        //         </div>
-        //         :
-        //         <div>No Authed</div>
-        //     }
-
-        // </Container>
     );
 }
