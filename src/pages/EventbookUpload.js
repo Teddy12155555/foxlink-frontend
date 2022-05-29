@@ -74,6 +74,12 @@ export default function EventbookUpload({token, ...rest}) {
 
     const updateData = () => {
         setWorkshop(null);
+        setProject(null);
+        setSheet(null);
+        setSelectItem(null);
+        setProjectItem(null);
+        setSheetItem(null);
+
         setKeys(null);
         setDatas(null);
         apiWorkShopList(token).then(res => {
@@ -182,6 +188,7 @@ export default function EventbookUpload({token, ...rest}) {
                         'datas' : processed_data
                     }
                     setParameter(csv_data);
+                    updateData();
                 }
                 
              }).catch(err => {
