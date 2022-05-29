@@ -6,6 +6,8 @@ import { Layout as LayoutIcon } from '../icons/layout';
 import { QRCode as QRCodeIcon } from '../icons/qrcode';
 import { Info as InfoIcon } from '../icons/info';
 import { Device as DeviceIcon } from '../icons/device';
+import MapIcon from '@mui/icons-material/Map';
+
 import { Logo } from './logo';
 
 import { DashboardNavbar } from './dashboard-navbar';
@@ -19,13 +21,19 @@ export const DashboardSidebar = ({idx, setIdx}) => {
         {
           index: 3,
           icon: (<StatusIcon fontSize="small" />),
-          title: '統計資料',
+          title: '统计资料',
           active: false
         },
         {
           index: 4,
           icon: (<QRCodeIcon fontSize="small" />),
-          title: 'QR Code 下載',
+          title: 'QR Code 下载',
+          active: false
+        },
+        {
+          index: 5,
+          icon: (<MapIcon fontSize="small" />),
+          title: '车间地图',
           active: false
         }
       ];
@@ -34,19 +42,25 @@ export const DashboardSidebar = ({idx, setIdx}) => {
       {
         index: 0,
         icon: (<InfoIcon fontSize="small" />),
-        title: '車間員工資訊表 上傳',
+        title: '员工专职表 上传',
         active: false
       },
       {
         index: 1,
         icon: (<LayoutIcon fontSize="small" />),
-        title: '車間 Layout 座標表 上傳',
+        title: 'Layout 座标表 上传',
         active: false
       },
       {
         index: 2,
         icon: (<DeviceIcon fontSize="small" />),
-        title: '專案 Device 事件簿 上傳',
+        title: '专案 Device 事件簿 上传',
+        active: false
+      },
+      {
+        index : 6,
+        icon: (<MapIcon fontSize="small"/>),
+        title: '车间地图 上传',
         active: false
       }
     ];

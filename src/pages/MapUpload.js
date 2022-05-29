@@ -9,23 +9,18 @@ import { Box,
     Typography, 
     createTheme, 
     ThemeProvider,
-    FormControl,
-    InputLabel,
-    Select,
     MenuItem,
-    Tabs,
-    Tab
+    TextField
 } from '@mui/material';
 
-import ExcelTableView from "../components/excel-table-view";
-import { Parameter } from "../components/parameter";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import {Upload} from '../icons/upload';
 
-import {apiDevices, apiWorkShopList, apiDevicesData} from "../api.js";
+import {apiMapPost, apiWorkShopList, apiDevicesData} from "../api.js";
+import { Alert } from "bootstrap";
 
 const darkTheme = createTheme({
     palette: {
@@ -50,7 +45,7 @@ const Input = styled('input')({
     display: 'none',
 });
 
-export default function DevicesUpload({token, ...rest}) {
+export default function MapUpload({token, ...rest}) {
     const [dataStatus, setDataStatus] = useState(" No File Chosen");
     const [uploading, setUpload] = useState(false);
     // init workshop
@@ -59,16 +54,12 @@ export default function DevicesUpload({token, ...rest}) {
     const [keys, setKeys] = useState();
     const [datas, setDatas] = useState();
 
-    const [parameter, setParameter] = useState();
-
     useEffect(()=>{
         updateData();
     }, [])
 
     const updateData = () => {
         setWorkshop(null);
-        setKeys(null);
-        setDatas(null);
         apiWorkShopList(token).then(res => {
             setSelectItem(res.data.map(name=>{
                 return(<MenuItem key={name} value={name}>{name}</MenuItem>)
@@ -90,54 +81,31 @@ export default function DevicesUpload({token, ...rest}) {
         })
     }
 
-    const handleWorkshopChange = (event) => {
-        setWorkshop(event.target.value);
-        fetchData(event.target.value);
-    }
-
     const handleFileChange = (e) => {
         if(e.target.files.length > 0){
-            setDataStatus(e.target.files[0].name);
+            var filename = e.target.files[0].name;
+            setDataStatus(filename);
+            filename = filename.match(/(.*)\.[^.]+$/)[1];
             setUpload(true);
-            
+
             const file = e.target.files[0];
             let formData = new FormData();
-            formData.append("file", file);
-            formData.append("clear_all", true);
+            formData.append("image", file);
             
             let data = {};
             data['token'] = token;
             data['file'] = formData;
+            data['name'] = filename;
             
-            apiDevices(data).then(res=>{
-                if(res.status === 201){
-                    setUpload(false);
-                    updateData();
-                    //setParameter(res.data['parameter']);
-                    let rawdata = res.data['parameter'].split(/\n/);
-                    let processed_data = [];
-                    let keys = []
-                    rawdata.map((line, i) => {
-                        if(i==0){
-                            keys = line.split(',');
-                            keys[0] = 'idx';
-                        } else{
-                            let temp = line.split(',');
-                            let obj = {};
-                            temp.map((item, j)=>{
-                                obj[keys[j]] = temp[j];
-                            })
-                            processed_data.push(obj);
-                        }
-                    });
-                    let csv_data = {
-                        'keys' : keys,
-                        'datas' : processed_data
-                    }
-                    setParameter(csv_data);
-                }
+            apiMapPost(data).then(res=>{
+                setUpload(false);
+                updateData();
+                setDataStatus("上传完毕");
+                console.log(res);
              }).catch(err => {
+                 // 後端沒有擋擋名錯誤
                 console.log(err.response.data);
+                alert('档名有误');
              })
         } else {
             setDataStatus("No File Chosen");
@@ -147,7 +115,7 @@ export default function DevicesUpload({token, ...rest}) {
     return(
         <ThemeProvider theme={darkTheme}>
             <Card >
-            <CardHeader title="车间 Layout 座标表上传" />
+            <CardHeader title="车间 Layout 图上传" />
             <Divider sx={{ borderBottomWidth: 3 }}/>
             <CardContent>
                 <Box
@@ -167,7 +135,7 @@ export default function DevicesUpload({token, ...rest}) {
                 }}
                 >
                     <label htmlFor="contained-button-file">
-                        <Input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="contained-button-file"  onChange={handleFileChange} /> 
+                        <Input type="file" accept="image/png" id="contained-button-file"  onChange={handleFileChange} /> 
                         <LoadingButton
                             color="success" 
                             variant="contained" 
@@ -199,55 +167,7 @@ export default function DevicesUpload({token, ...rest}) {
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         {dataStatus}
                     </Typography>
-                </Box>
-                {
-                    parameter && (
-                    <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        pt: 2
-                    }}
-                    >
-                        <Divider sx={{ borderBottomWidth: 3 }}/>
-                        <Parameter csv_data={parameter}/>
-                    </Box>
-                    )
-                }  
-                <Divider sx={{ borderBottomWidth: 3, m: 3 }}/>
-                {
-                    selectItem && 
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            m: 2
-                        }}
-                    >   
-                    <Typography sx={{m:1}}>
-                        现有资料 : 
-                    </Typography>
-                    <FormControl sx={{width:300}}>
-                        <InputLabel id="workshop-label">Workshop</InputLabel>
-                        <Select
-                            labelId="workshop-label"
-                            id="workshop-select"
-                            value={workshop}
-                            onChange={handleWorkshopChange}
-                        >
-                            {
-                                selectItem
-                            }
-                        </Select>
-                    </FormControl>
-                    </Box> 
-                }
-                <Box>
-                    {
-                        keys && datas && 
-                        <ExcelTableView keys={keys} datas={datas}/>
-                    }
-                </Box>
+                </Box> 
             </CardContent>
             </Card>
         </ThemeProvider>

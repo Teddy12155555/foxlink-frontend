@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { 
     Box,
     Grid,
+    Button,
  } from '@mui/material';
  import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -80,10 +81,14 @@ export default function Status({authed, ...rest}) {
 
     return (
       <ThemeProvider theme={darkTheme}>
+        
         <Grid
           container
           spacing={3}
         >
+          <Grid item lg={12}>
+            <Button variant="outlined" onClick={updatedata}>Update</Button>
+          </Grid>
           <Grid
             item
             lg={4}

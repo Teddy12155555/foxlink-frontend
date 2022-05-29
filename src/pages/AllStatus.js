@@ -92,7 +92,7 @@ export default function AllStatus({authed, ...rest}) {
     return (
         <ThemeProvider theme={darkTheme}>
             <Card >
-            <CardHeader title="員工狀態總覽" 
+            <CardHeader title="员工状态总览" 
             action={(<Button
                     color="primary"
                     size="large"

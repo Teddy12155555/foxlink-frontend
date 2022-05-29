@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import * as XLSX from 'xlsx';
-
 import { styled } from '@mui/material/styles';
 import { Box, 
     Card, 
@@ -11,20 +9,25 @@ import { Box,
     Typography, 
     createTheme, 
     ThemeProvider,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem 
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell
 } from '@mui/material';
 
-import ExcelTableView from "../components/excel-table-view";
+import { Dialog, DialogTitle, DialogContent, DialogActions
+  } from '@mui/material';
+
+import { WorkExperiences } from "../components/worker-experiences";
+import { Parameter } from "../components/parameter";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import {Upload} from '../icons/upload';
 
-import {apiWorkerinfos} from "../api.js";
+import {apiWorkerinfos, apiWorkerAll} from "../api.js";
 
 const darkTheme = createTheme({
     palette: {
@@ -45,75 +48,158 @@ const darkTheme = createTheme({
     },
 });
 
+const infotable = (datas) => {
+    let keys = ["username", "full_name", "workshop", "level", "shift", "superior", "experiences"]
+    return (
+        <div>
+            <Divider sx={{ borderBottomWidth: 3, m: 3 }}/>
+            <Table >
+            <TableHead>
+                <TableRow>
+                    <TableCell>
+                    白班
+                    </TableCell>
+                </TableRow>
+            </TableHead>
+            <TableHead sx={{background:"#272d3a"}}>
+                <TableRow>
+                    {
+                        keys.map((key, index) => {
+                            return <TableCell key={index}>{key}</TableCell>
+                        })
+                    }
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                    {
+                        datas['day_shift'].map((data, i) => {
+                            return (
+                                <TableRow key={i+1}>
+                                    {
+                                        keys.map((key, j)=>{
+                                            if(key != "experiences"){
+                                                return (
+                                                    <TableCell key={key}>
+                                                        {
+                                                            data[key]
+                                                        }
+                                                    </TableCell>
+                                                )
+                                            } else {
+                                                return (
+                                                    <TableCell key={`${key}_btn`}>
+                                                        {
+                                                            <WorkExperiences list_data={data["experiences"]}>Experiences</WorkExperiences>
+                                                        }
+                                                    </TableCell>
+                                                )
+                                            }
+                                            
+                                        })
+                                    }
+                                </TableRow>
+                            )
+                        })
+                    }
+            </TableBody>
+            </Table>
+
+            <Divider sx={{ borderBottomWidth: 3, m: 3 }}/>
+            <Table >
+            <TableHead>
+                <TableRow>
+                    <TableCell>
+                    夜班
+                    </TableCell>
+                </TableRow>
+            </TableHead>
+            <TableHead sx={{background:"#272d3a"}}>
+                <TableRow>
+                    {
+                        keys.map((key, index) => {
+                            return <TableCell key={index}>{key}</TableCell>
+                        })
+                    }
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                    {
+                        datas['night_shift'].map((data, i) => {
+                            return (
+                                <TableRow key={i+1}>
+                                    {
+                                        keys.map((key, j)=>{
+                                            if(key != "experiences"){
+                                                return (
+                                                    <TableCell key={key}>
+                                                        {
+                                                            data[key]
+                                                        }
+                                                    </TableCell>
+                                                )
+                                            } else {
+                                                return (
+                                                    <TableCell key={`${key}_btn`}>
+                                                        {
+                                                            <WorkExperiences list_data={data["experiences"]}>Experiences</WorkExperiences>
+                                                        }
+                                                    </TableCell>
+                                                )
+                                            }
+                                            
+                                        })
+                                    }
+                                </TableRow>
+                            )
+                        })
+                    }
+            </TableBody>
+            </Table>
+        </div>
+    )
+}
+
 const Input = styled('input')({
     display: 'none',
 });
 
 export default function WorkerinfoUpload({token, ...rest}) {
-    const [dataStatus, setDataStatus] = useState(" No File Chosen");
+    const [dataStatus, setDataStatus] = useState("正在加载现有资料 ....");
     const [uploading, setUpload] = useState(false);
-    // handle data
-    const [excelData, setExcelData] = useState({}); // alldata
-    const [hasData, setHasData] = useState(false);
-    
-    const [sheetName, setSheetName] = useState();
-    const [sheet, setSheet] = useState();
+
+    const [data, setData] = useState();
+
+    const [parameter, setParameter] = useState();
+
+    const [btnStatus, setBtn] = useState(true);
 
     useEffect(()=> {
-        if(Object.keys(excelData).length === 0){
-            // first render
-            setDataStatus("No File Chosen");
-            document.getElementById('contained-button-file').value = "";
-        } else {
-            setSheetName(Object.keys(excelData).map(sheetvalue=>{
-                     return(<MenuItem key={sheetvalue} value={sheetvalue}>{sheetvalue}</MenuItem>)
-                 }));
-            setHasData(true);
-        }
-    }, [excelData])
+        UpdateData();
+    }, [])
 
+    String.prototype.replaceAt=function(index, char) {
+        var a = this.split("");
+        a[index] = char;
+        return a.join("");
+    }
 
-    const handleFile = (file) => {
-        /* Boilerplate to set up FileReader */
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            const rABS = !!reader.readAsBinaryString;
-            reader.onload = e => {
-                /* Parse data */
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
+    const UpdateData = () => {
+        let data = {};
+        data['token'] = token;
+        apiWorkerAll(data).then(res => {
+            setData(res.data);
+            setDataStatus("No file chosen !");
+            setBtn(false);
+        }).catch(err => {
 
-                let  allData = new Object();
-                wb.SheetNames.map(sheet=>{
-                    const ws = wb.Sheets[sheet];
-                    const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-                    console.log(data);
-                    allData[sheet] = {
-                        data:data,
-                        cols:make_cols(ws["!ref"])
-                    };
-                })
-                setExcelData(allData);
-                resolve();
-            };
-            if (rABS) reader.readAsBinaryString(file);
-            else reader.readAsArrayBuffer(file);
         })
     }
-    const onSheetChange = (e) => {
-        setSheet(e.target.value);
-    }
 
-    const make_cols = (refstr) => {
-    let o = [], C = XLSX.utils.decode_range(refstr).e.c + 1;
-    for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i };
-    return o;
-    };
-
-    const changeHandler = (e) => {
+    const fileHandler = (e) => {
         if(e.target.files.length > 0){
             setDataStatus(e.target.files[0].name);
             setUpload(true);
+            setData(null);
             
             const file = e.target.files[0];
             let formData = new FormData();
@@ -124,18 +210,55 @@ export default function WorkerinfoUpload({token, ...rest}) {
             data['file'] = formData;
             
             apiWorkerinfos(data).then(res=>{
-                setUpload(false);
-
-                handleFile(file).then(success => {
+                if(res.status === 201){
+                    setUpload(false);
+                    setDataStatus("正在加载现有资料 ....");
+                    setBtn(true);
+                    UpdateData();
                     
-                }).catch(fail=>{
-    
-                });
+                    // fucking rule based code ==
+                    let rawdata = res.data.split(/\n/);
+                    let processed_data = [];
+                    let keys = []
+                    rawdata.map((line, i) => {
+                        if(i==0){
+                            keys = line.split(',');
+                            keys[0] = 'idx';
+                        }
+                        else{
+                            let flag = false;
+                            for (let i = 0; i < line.length; i++) {
+                                if(line[i] == '('){
+                                    flag = true;
+                                }
+                                if(flag == true){
+                                    if(line[i] == ',') continue;
+                                    if(line[i] == ')') flag = false;
+                                } else{
+                                    if(line[i] == ',') line = line.replaceAt(i, '@');
+                                }
+                            }
+                            let temp = line.split('@');
+                            let obj= {}
+                            temp.map((item, j)=> {
+                                obj[keys[j]] = temp[j];
+                            })
+                            processed_data.push(obj);
+                        }
+
+                    })
+                    let csv_data = {
+                        'keys' : keys,
+                        'datas' : processed_data
+                    }
+                    setParameter(csv_data)
+                }
              }).catch(err => {
                 console.log(err.response.data);
              })
         } else {
             setDataStatus("No File Chosen");
+            setBtn(false);
         }
     }
     
@@ -143,7 +266,7 @@ export default function WorkerinfoUpload({token, ...rest}) {
     return(
         <ThemeProvider theme={darkTheme}>
             <Card >
-            <CardHeader title="車間員工資訊表上傳" />
+            <CardHeader title="员工专职表上传" />
             <Divider sx={{ borderBottomWidth: 3 }}/>
             <CardContent>
                 <Box
@@ -163,7 +286,7 @@ export default function WorkerinfoUpload({token, ...rest}) {
                 }}
                 >
                 <label htmlFor="contained-button-file">
-                    <Input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="contained-button-file"  onChange={changeHandler} /> 
+                    <Input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="contained-button-file"  onChange={fileHandler} disabled={btnStatus}/> 
                     <LoadingButton
                         color="success" 
                         variant="contained" 
@@ -178,9 +301,10 @@ export default function WorkerinfoUpload({token, ...rest}) {
                         }}
                         type="input"
                         loading={uploading}
+                        disabled={btnStatus}
                         >
                         {
-                            uploading ? "上傳中..." : "選擇檔案" 
+                            uploading ? "上传中..." : "选择档案" 
                         }
                     </LoadingButton>
                 </label>
@@ -196,26 +320,23 @@ export default function WorkerinfoUpload({token, ...rest}) {
                         {dataStatus}
                     </Typography>
                 </Box> 
+                {
+                    parameter && (
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        pt: 2
+                    }}
+                    >
+                        <Divider sx={{ borderBottomWidth: 3 }}/>
+                        <Parameter csv_data={parameter}/>
+                    </Box>
+                    )
+                }
                 <Box>
                     {
-                        hasData && 
-                        <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">試算表</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={sheet}
-                            label="Age"
-                            onChange={onSheetChange}
-                        >
-                            {
-                                sheetName
-                            }
-                        </Select>
-                        </FormControl>
-                    }
-                    {
-                        hasData && <ExcelTableView data={excelData} sheetName={sheet} />
+                        data && infotable(data)
                     }
                 </Box>
             </CardContent>

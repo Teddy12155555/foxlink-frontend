@@ -61,7 +61,7 @@ export function CrashedDevices({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            經常異常裝置
+            经常异常装置
           </Typography>
           <Typography
             color="textPrimary"
@@ -102,7 +102,7 @@ export function CrashedDevices({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>

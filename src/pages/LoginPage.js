@@ -60,13 +60,13 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                         }
                     }).catch(err =>{
                         console.log(err);
-                        alert("權限不足");
+                        alert("权限不足");
                     })
                 }
             }
         })
         .catch(err=> {
-            alert("帳密錯誤");
+            alert("帐密错误");
             document.getElementById('account').value = "";
             document.getElementById('password').value = "";
     })
@@ -120,14 +120,14 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                         color="textPrimary"
                         variant="h4"
                         >
-                        系統登入
+                        系统登入
                         </Typography>
                         <Typography
                         color="textSecondary"
                         gutterBottom
                         variant="body2"
                         >
-                        使用主管級帳戶進入
+                        使用主管级帐户进入
                         </Typography>
                     </Box>
                     <Box
@@ -139,7 +139,7 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                     </Box>
                     <TextField
                         fullWidth
-                        label="帳號"
+                        label="帐户"
                         margin="normal"
                         name="account"
                         id="account"
@@ -147,7 +147,7 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                     />
                     <TextField
                         fullWidth
-                        label="密碼"
+                        label="密码"
                         margin="normal"
                         name="password"
                         id="password"

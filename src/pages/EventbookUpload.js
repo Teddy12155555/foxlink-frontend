@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import * as XLSX from 'xlsx';
-
 import { styled } from '@mui/material/styles';
 import { Box, 
     Card, 
@@ -19,13 +17,14 @@ import { Box,
 } from '@mui/material';
 
 import ExcelTableView from "../components/excel-table-view";
+import { Parameter } from "../components/parameter";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import {Upload} from '../icons/upload';
 
-import {apiEventbook} from "../api.js";
+import {apiEventbook, apiWorkShopList, apiProjectList, apiEventbookGet} from "../api.js";
 
 const darkTheme = createTheme({
     palette: {
@@ -53,65 +52,96 @@ const Input = styled('input')({
 export default function EventbookUpload({token, ...rest}) {
     const [dataStatus, setDataStatus] = useState(" No File Chosen");
     const [uploading, setUpload] = useState(false);
-    // handle data
-    const [excelData, setExcelData] = useState({}); // alldata
-    const [hasData, setHasData] = useState(false);
+    // init workshop
+    const [selectItem, setSelectItem] = useState("");
+    const [projectItem, setProjectItem] = useState("");
+    const [sheetItem, setSheetItem] = useState("");
+
+    const [workshop, setWorkshop] = useState("");
+    const [project, setProject] = useState("");
+    const [sheet, setSheet] = useState("");
+
+    const [keys, setKeys] = useState();
+    const [datas, setDatas] = useState();
     
-    const [sheetName, setSheetName] = useState();
-    const [sheet, setSheet] = useState();
+    const [processedData, setProcessedDatas] = useState();
 
-    useEffect(()=> {
-        if(Object.keys(excelData).length === 0){
-            // first render
-            setDataStatus("No File Chosen");
-            document.getElementById('contained-button-file').value = "";
-        } else {
-            setSheetName(Object.keys(excelData).map(sheetvalue=>{
-                     return(<MenuItem key={sheetvalue} value={sheetvalue}>{sheetvalue}</MenuItem>)
-                 }));
-            setHasData(true);
+    const [parameter, setParameter] = useState();
+
+    useEffect(()=>{
+        updateData();
+    }, [])
+
+    const updateData = () => {
+        setWorkshop(null);
+        setKeys(null);
+        setDatas(null);
+        apiWorkShopList(token).then(res => {
+            setSelectItem(res.data.map(name=>{
+                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
+            }))
+        }).catch(err => {
+        });
+    }
+
+    const handleWorkshopChange = (event) => {
+        setWorkshop(event.target.value);
+        //fetchData(event.target.value);
+        let data = {
+            workshopname:event.target.value,
+            token: token
         }
-    }, [excelData])
+        apiProjectList(data).then(res=>{
+            setProjectItem(res.data.map(name=>{
+                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
+            }))
+        }).catch(err=>{
+            console.log(err);
+        });
+    }
 
-
-    const handleFile = (file) => {
-        /* Boilerplate to set up FileReader */
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            const rABS = !!reader.readAsBinaryString;
-            reader.onload = e => {
-                /* Parse data */
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, { type: rABS ? "binary" : "array" });
-
-                let  allData = new Object();
-                wb.SheetNames.map(sheet=>{
-                    const ws = wb.Sheets[sheet];
-                    const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-                    console.log(data);
-                    allData[sheet] = {
-                        data:data,
-                        cols:make_cols(ws["!ref"])
-                    };
+    const handleProjectChange = (event) => {
+        setProject(event.target.value);
+        // get data
+        let data = {};
+        data['token'] = token;
+        data['project'] = event.target.value;
+        data['workshop'] = workshop;
+        apiEventbookGet(data).then(res=>{
+            let keys = ["category", "message", "priority"];
+            setKeys(keys);
+            // processing the data
+            let processed_datas = {}
+            res.data.map(obj => {
+                obj['devices'].map(device => {
+                    if(processed_datas[device.device_name] == null){
+                        processed_datas[device.device_name] = []
+                    } 
+                    processed_datas[device.device_name].push(
+                        {
+                            "category": obj["category"],
+                            "message" : obj["message"],
+                            "priority":obj["priority"]
+                        }
+                    )
                 })
-                setExcelData(allData);
-                resolve();
-            };
-            if (rABS) reader.readAsBinaryString(file);
-            else reader.readAsArrayBuffer(file);
+            })
+            setSheetItem(Object.keys(processed_datas).map(key=>{
+                return(<MenuItem key={key} value={key}>{key}</MenuItem>)
+            }))
+            setProcessedDatas(processed_datas);
+        }).catch(err => {
+            console.log(err);
         })
-    }
-    const onSheetChange = (e) => {
-        setSheet(e.target.value);
+        
     }
 
-    const make_cols = (refstr) => {
-    let o = [], C = XLSX.utils.decode_range(refstr).e.c + 1;
-    for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i };
-    return o;
-    };
+    const handleSheetChange = (event) => {
+        setSheet(event.target.value);
+        setDatas(processedData[event.target.value])
+    }
 
-    const changeHandler = (e) => {
+    const handleFileChange = (e) => {
         if(e.target.files.length > 0){
             setDataStatus(e.target.files[0].name);
             setUpload(true);
@@ -125,15 +155,37 @@ export default function EventbookUpload({token, ...rest}) {
             data['file'] = formData;
             
             apiEventbook(data).then(res=>{
-                setUpload(false);
-
-                handleFile(file).then(success => {
+                if(res.status == 201){
+                    setUpload(false);
+                    let rawdata = res.data.split(/\n/);
+                    let keys = [];
+                    let processed_data = []
+                    rawdata.map((line, i) => {
+                        if(i == 0) {
+                            keys = line.split(',');
+                            if(keys.length > 0){
+                                keys[0] = 'idx';
+                            }
+                        }
+                        else{
+                            let temp = line.split(',');
+                            let obj = {};
+                            temp.map((item, j)=>{
+                                obj[keys[j]] = temp[j];
+                            })
+                            processed_data.push(obj);
+                        }
+                    })
                     
-                }).catch(fail=>{
-    
-                });
+                    let csv_data = {
+                        'keys' : keys,
+                        'datas' : processed_data
+                    }
+                    setParameter(csv_data);
+                }
+                
              }).catch(err => {
-                console.log(err.response.data);
+                console.log(err);
              })
         } else {
             setDataStatus("No File Chosen");
@@ -144,7 +196,7 @@ export default function EventbookUpload({token, ...rest}) {
     return(
         <ThemeProvider theme={darkTheme}>
             <Card >
-            <CardHeader title="專案 Device 事件簿上傳" />
+            <CardHeader title="专案 Device 事件簿上传" />
             <Divider sx={{ borderBottomWidth: 3 }}/>
             <CardContent>
                 <Box
@@ -164,7 +216,7 @@ export default function EventbookUpload({token, ...rest}) {
                 }}
                 >
                 <label htmlFor="contained-button-file">
-                    <Input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="contained-button-file"  onChange={changeHandler} /> 
+                    <Input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" id="contained-button-file"  onChange={handleFileChange} /> 
                     <LoadingButton
                         color="success" 
                         variant="contained" 
@@ -181,7 +233,7 @@ export default function EventbookUpload({token, ...rest}) {
                         loading={uploading}
                         >
                         {
-                            uploading ? "上傳中..." : "選擇檔案" 
+                            uploading ? "上传中..." : "选择档案"
                         }
                     </LoadingButton>
                 </label>
@@ -196,30 +248,85 @@ export default function EventbookUpload({token, ...rest}) {
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         {dataStatus}
                     </Typography>
-                </Box> 
-                <Box>
+                </Box>
+                {
+                    parameter && (
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        pt: 2
+                    }}
+                    >
+                        <Divider sx={{ borderBottomWidth: 3 }}/>
+                        <Parameter csv_data={parameter}/>
+                    </Box>
+                    )
+                } 
+                <Divider sx={{ borderBottomWidth: 3, m: 3 }}/>
+                {
+                    selectItem && 
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            m: 2
+                        }}
+                    >   
+                    <Typography sx={{m:1}}>
+                        现有资料 : 
+                    </Typography>
+                    <FormControl sx={{width:300}}>
+                        <InputLabel id="workshop-label">Workshop</InputLabel>
+                        <Select
+                            labelId="workshop-label"
+                            id="workshop-select"
+                            value={workshop}
+                            onChange={handleWorkshopChange}
+                        >
+                            {
+                                selectItem
+                            }
+                        </Select>
+                    </FormControl >
                     {
-                        hasData && 
-                        <Container sx={{mt:3}}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">試算表</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={sheet}
-                                    label="Age"
-                                    onChange={onSheetChange}
-                                >
-                                    {
-                                        sheetName
-                                    }
-                                </Select>
-                            </FormControl>
-                        </Container>
-                        
+                        projectItem && 
+                        <FormControl sx={{width:200}}>
+                            <InputLabel id="project-label">Project</InputLabel>
+                            <Select
+                                labelId="project-label"
+                                id="project-select"
+                                value={project}
+                                onChange={handleProjectChange}
+                            >
+                                {
+                                    projectItem
+                                }
+                            </Select>
+                        </FormControl>
                     }
                     {
-                        hasData && <ExcelTableView data={excelData} sheetName={sheet} />
+                        sheetItem && 
+                        <FormControl sx={{width:200}}>
+                            <InputLabel id="sheet-label">Device</InputLabel>
+                            <Select
+                                labelId="sheet-label"
+                                id="sheet-select"
+                                value={sheet}
+                                onChange={handleSheetChange}
+                            >
+                                {
+                                    sheetItem
+                                }
+                            </Select>
+                        </FormControl>
+                    }
+                    </Box> 
+                }
+                <Box>
+                    {
+                        keys && sheet && datas && 
+                        <ExcelTableView keys={keys} datas={datas}/>
                     }
                 </Box>
             </CardContent>

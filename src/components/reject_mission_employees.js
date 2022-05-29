@@ -26,7 +26,7 @@ export function RejectMissionEmployees({list_data, ...rest}) {
                     姓名 : {employee.full_name}
                   </Typography>
                   <Typography>
-                    拒絕總數 : {employee.count}
+                    拒绝总数 : {employee.count}
                   </Typography>
               </CardContent>
             </Card>
@@ -62,7 +62,7 @@ export function RejectMissionEmployees({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            拒絕任務總數的員工排名
+            拒绝任务总数的员工排名
           </Typography>
           <Typography
             color="textPrimary"
@@ -103,7 +103,7 @@ export function RejectMissionEmployees({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>

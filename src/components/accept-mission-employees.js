@@ -28,7 +28,7 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
                     姓名 : {employee.full_name}
                   </Typography>
                   <Typography>
-                    接受總數 : {employee.count}
+                  接受总数 : {employee.count}
                   </Typography>
               </CardContent>
             </Card>
@@ -64,7 +64,7 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            接受任務總數的員工排名
+            接受任务总数的员工排名
           </Typography>
           <Typography
             color="textPrimary"
@@ -105,7 +105,7 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>

@@ -3,10 +3,12 @@ import Login from './LoginPage';
 import Status from "./Status";
 import AllStatus from "./AllStatus";
 import QrcodeDownload from "./Qrcode";
+import Map from "./Map";
 
 import EventbookUpload from "./EventbookUpload";
 import DevicesUpload from "./DevicesUpload";
 import WorkerinfoUpload from "./WorkinfoUpload";
+import MapUpload from "./MapUpload";
 
 import MuiAlert from '@mui/material/Alert';
 import { Container,Snackbar,Box } from "@mui/material";
@@ -21,13 +23,6 @@ export default function Homepage() {
     // page conditional render
     const [pageIdx, setIdx] = useState(-1);
 
-
-    /* 0 : Auth form
-     * 1 : Landing page
-     * 2 : Status
-     * 3 : File Loader
-     * 4 : Download QR code
-    */
     // bar
     const [open, setOpen] = useState(false);
     const [state, setState] = useState({
@@ -45,20 +40,15 @@ export default function Homepage() {
     }
 
     const conditionalRender = (idx) => {
-        if(idx === -1){
-            return (
-            <AllStatus authed={authed} />
-            );
-        } else if(idx === 3){
-            return(<Status authed={authed} />);
-        } else if(idx === 4){
-            return(<QrcodeDownload token={token}/>);
-        } else if(idx === 0){
-            return(<WorkerinfoUpload token={token}/>);
-        } else if(idx === 1){
-            return(<DevicesUpload token={token}/>);
-        } else if(idx === 2){
-            return(<EventbookUpload token={token} />);
+        switch(idx) {
+            case -1: return (<AllStatus authed={authed} />);
+            case 0: return(<WorkerinfoUpload token={token}/>);
+            case 1: return(<DevicesUpload token={token}/>);
+            case 2: return(<EventbookUpload token={token} />);
+            case 3: return(<Status authed={authed} />);
+            case 4: return(<QrcodeDownload token={token}/>);
+            case 5: return(<Map token={token}/>);
+            case 6: return(<MapUpload token={token} />);
         }
     }
 

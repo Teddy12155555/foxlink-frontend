@@ -9,49 +9,43 @@ import {
     Container
 } from '@mui/material';
 
-export default function ExcelTableView({sheetName, data, ...rest}) {
-    const [state, setState] = useState({}); 
+export default function ExcelTableView({keys, datas, ...rest}) {
+    const [table, setTable] = useState();
 
-    useEffect(()=>{
-        if(sheetName != "" && data[sheetName]){
-            console.log(data[sheetName]['data']);
-            console.log(data[sheetName]['cols']);
-            setState({
-                data:data[sheetName]['data'],
-                cols:data[sheetName]['cols']
-            })
-        }
-    }, [sheetName])
-
-    return((Object.keys(state) != 0) && 
-        (<Container sx={{overflowX: 'scroll'}}>
-            <Table >
-            <TableHead sx={{background:"#272d3a"}}>
-                <TableRow>
-                    {
-                        state.cols.map(c => (
-                        <TableCell key={c.key}>{state.data[0][c.key]}</TableCell>
-                        ))
-                    }
-                </TableRow>
-            </TableHead>
-                <TableBody>
-                    {state.data.map((r, i) => {
-                        if(i != 0){
-                            return (
-                                <TableRow key={i}>
-                                    {state.cols.map(c => (
-                                        <TableCell key={c.key}>{r[c.key]}</TableCell>
-                                    ))}
-                                </TableRow>
-                                )
-                        }
-                    })}
-                </TableBody>
-           
-        </Table>
-        </Container>
-        ));
+    return (<Container sx={{overflowX: 'scroll'}}>
+    <Table >
+    <TableHead sx={{background:"#272d3a"}}>
+        <TableRow>
+            {
+                keys.map((key, index) => {
+                    return <TableCell key={index}>{key}</TableCell>
+                })
+            }
+        </TableRow>
+    </TableHead>
+        <TableBody>
+            {
+                 datas.map((data, i) => {
+                    return (
+                        <TableRow key={i+1}>
+                            {
+                                keys.map((key, j)=>{
+                                    return (
+                                        <TableCell key={key}>
+                                            {
+                                                data[key]
+                                            }
+                                        </TableCell>
+                                    )
+                                })
+                            }
+                        </TableRow>
+                    )
+                })
+            }
+        </TableBody>
+   
+    </Table>
+    </Container>);
         
-
 }

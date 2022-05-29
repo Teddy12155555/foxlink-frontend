@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 
 import { saveAs } from 'file-saver';
 
-import { Box, Card, CardContent, CardHeader, Divider, Typography, createTheme, TextField, ThemeProvider,InputLabel, MenuItem, Select,FormControl } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Divider, Typography, createTheme, Container, ThemeProvider,InputLabel, MenuItem, Select,FormControl } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { QRCode as QRCodeIcon } from '../icons/qrcode';
+import MapIcon from '@mui/icons-material/Map';
 
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
-import {apiWorkShopList, apiQRCode} from "../api.js";
+import {apiWorkShopList, apiMapGet} from "../api.js";
+import { width } from "@mui/system";
 
 const darkTheme = createTheme({
     palette: {
@@ -29,16 +30,17 @@ const darkTheme = createTheme({
     },
   });
 
-
-
-export default function QrcodeDownload({token, ...rest}) {
-    const [downloading, setDownload] = useState(false);
+export default function Map({token, ...rest}) {
+  const [downloading, setDownload] = useState(false);
     const [workshop, setWorkshop] = useState("");
     
     const [selectItem, setSelectItem] = useState("");
+    const [img, setImg] = useState();
 
     let displayWorkShop = "";
-
+    const style = {
+        'max-width': '100%',
+      };
     useEffect(()=> {
         apiWorkShopList(token).then(res => {
             setSelectItem(res.data.map(name=>{
@@ -53,17 +55,26 @@ export default function QrcodeDownload({token, ...rest}) {
         setWorkshop(event.target.value)
     }
 
-    const qrCodeHandler = () => {
-        //let data = `grant_type=&username=${account}&password=${password}&scope=&client_id=&client_secret=`
+    const arrayBufferToBase64 = (buffer) =>  {
+      var binary = '';
+      var bytes = [].slice.call(new Uint8Array(buffer));
+      bytes.forEach((b) => binary += String.fromCharCode(b));
+      const img_component = <img src={`data:image/png;base64,${window.btoa(binary)}`} style={style} />;
+      setImg(img_component);
+  };
+
+    const mapHandler = () => {
         if(workshop != ""){
             setDownload(true);
             const data = {
                 "name" : workshop,
                 "token" : token
             }
-            apiQRCode(data)
+            apiMapGet(data)
             .then(res => {
-                    saveAs(res.data, `${workshop}.zip`);
+                    //saveAs(res.data, `${workshop}.png`);
+                    arrayBufferToBase64(res.data);
+                    //setImg(res.data);
                     setDownload(false);
                 }
             ).catch(
@@ -77,7 +88,7 @@ export default function QrcodeDownload({token, ...rest}) {
     return (
         <ThemeProvider theme={darkTheme}>
             <Card >
-                <CardHeader title="QR Code 下载" />
+                <CardHeader title="车间地图显示" />
                 <Divider sx={{ borderBottomWidth: 3 }}/>
                 <CardContent>
                     <Box
@@ -87,7 +98,7 @@ export default function QrcodeDownload({token, ...rest}) {
                         pt: 2
                     }}
                     >
-                    <QRCodeIcon fontSize="large" />
+                    <MapIcon fontSize="large" />
                     </Box>
                     <Box
                     sx={{
@@ -97,7 +108,7 @@ export default function QrcodeDownload({token, ...rest}) {
                     }}
                     >   
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            请选取要下载的车间
+                            请选取要显示的车间
                         </Typography>
                     </Box>  
                     <Box
@@ -121,7 +132,7 @@ export default function QrcodeDownload({token, ...rest}) {
                                     }
                                 </Select>
                                 <LoadingButton
-                                    onClick={qrCodeHandler}
+                                    onClick={mapHandler}
                                     endIcon={<ArrowCircleDownIcon color="white"/>}
                                     loading={downloading}
                                     loadingPosition="end"
@@ -130,9 +141,21 @@ export default function QrcodeDownload({token, ...rest}) {
                                     color="primary"
                                     size="large"
                                 >
-                                    下載
+                                    显示
                                 </LoadingButton>
                         </FormControl>   
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}
+                    >
+                    <Container sx={{
+                    width: '-webkit-fill-available',
+                    overflowX:'scroll'}}>
+                        {img}
+                    </Container>
                     </Box>
                 </CardContent>
             </Card>

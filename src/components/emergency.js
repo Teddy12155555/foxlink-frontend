@@ -19,16 +19,16 @@ export function Emergency({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    任務 ID : {mission.mission_id}
+                    任务 ID : {mission.mission_id}
                   </Typography>
                   <Typography>
-                    裝置 ID : {mission.device_id}
+                  装置 ID : {mission.device_id}
                   </Typography>
                   <Typography>
-                  category : {mission.category}
+                  类别 : {mission.category}
                   </Typography>
                   <Typography>
-                    說明 : {mission.description}
+                  说明 : {mission.description}
                   </Typography>
                   <Typography>
                   assignees : {
@@ -88,7 +88,7 @@ export function Emergency({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            緊急通報
+            紧急通报
           </Typography>
           <Typography
             color="textPrimary"
@@ -129,7 +129,7 @@ export function Emergency({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>

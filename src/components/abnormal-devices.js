@@ -21,13 +21,13 @@ export function AbnormalDevices({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    裝置 ID : {device.device_id}
+                    装置 ID : {device.device_id}
                   </Typography>
                   <Typography>
                   category : {device.category}
                   </Typography>
                   <Typography>
-                  訊息 : {device.message}
+                  信息 : {device.message}
                   </Typography>
                   <Typography>
                   top_great_assignees : {
@@ -90,7 +90,7 @@ export function AbnormalDevices({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            機臺異常處理時間/次數
+            机台异常处理时间/次数
           </Typography>
           <Typography
             color="textPrimary"
@@ -131,7 +131,7 @@ export function AbnormalDevices({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>

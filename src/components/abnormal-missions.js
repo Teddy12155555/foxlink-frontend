@@ -21,16 +21,16 @@ export function AbnormalMissions({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    任務 ID : {mission.mission_id}
+                    任务 ID : {mission.mission_id}
                   </Typography>
                   <Typography>
-                    裝置 ID : {mission.device_id}
+                    装置 ID : {mission.device_id}
                   </Typography>
                   <Typography>
-                  category : {mission.category}
+                  类别 : {mission.category}
                   </Typography>
                   <Typography>
-                  訊息 : {mission.message}
+                  信息 : {mission.message}
                   </Typography>
               </CardContent>
             </Card>
@@ -66,7 +66,7 @@ export function AbnormalMissions({list_data, ...rest}) {
             variant="overline"
             fontSize="large"
           >
-            前十大歷史機台異常任務
+            前十大历史机台异常任务
           </Typography>
           <Typography
             color="textPrimary"
@@ -107,7 +107,7 @@ export function AbnormalMissions({list_data, ...rest}) {
         </DialogContent>
         <DialogActions >
           <Button onClick={handleClose} autoFocus variant="contained">
-            關閉
+          关闭
           </Button>
         </DialogActions>
       </Dialog>
