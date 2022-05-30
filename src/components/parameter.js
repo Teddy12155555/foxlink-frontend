@@ -22,7 +22,7 @@ export function Parameter({csv_data, ...rest}) {
   };
   
   return (
-    <Box sx={{ pt: 3 }}>
+    <Box sx={{ pt: 3, minWidth: '70vw' }}>
       <Button variant="contained" onClick={handleClickOpen}>
         查看 Parameter
       </Button>

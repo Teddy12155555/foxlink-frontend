@@ -16,8 +16,6 @@ import { Box,
     TableCell
 } from '@mui/material';
 
-import { Dialog, DialogTitle, DialogContent, DialogActions
-  } from '@mui/material';
 
 import { WorkExperiences } from "../components/worker-experiences";
 import { Parameter } from "../components/parameter";
@@ -57,7 +55,7 @@ const infotable = (datas) => {
             <TableHead>
                 <TableRow>
                     <TableCell>
-                    白班
+                    日班
                     </TableCell>
                 </TableRow>
             </TableHead>

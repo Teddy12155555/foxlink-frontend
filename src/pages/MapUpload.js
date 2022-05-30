@@ -9,8 +9,7 @@ import { Box,
     Typography, 
     createTheme, 
     ThemeProvider,
-    MenuItem,
-    TextField
+    MenuItem
 } from '@mui/material';
 
 
@@ -83,30 +82,38 @@ export default function MapUpload({token, ...rest}) {
 
     const handleFileChange = (e) => {
         if(e.target.files.length > 0){
-            var filename = e.target.files[0].name;
-            setDataStatus(filename);
-            filename = filename.match(/(.*)\.[^.]+$/)[1];
-            setUpload(true);
+            let filename = e.target.files[0].name;
+            let regex = filename.match(/_(.+)_/);
+            if(regex){
+                let filename = regex[1];
+                setDataStatus(filename);
+                //filename = filename.match(/(.*)\.[^.]+$/)[1];
+                setUpload(true);
 
-            const file = e.target.files[0];
-            let formData = new FormData();
-            formData.append("image", file);
-            
-            let data = {};
-            data['token'] = token;
-            data['file'] = formData;
-            data['name'] = filename;
-            
-            apiMapPost(data).then(res=>{
-                setUpload(false);
-                updateData();
-                setDataStatus("上传完毕");
-                console.log(res);
-             }).catch(err => {
-                 // 後端沒有擋擋名錯誤
-                console.log(err.response.data);
+                const file = e.target.files[0];
+                let formData = new FormData();
+                formData.append("image", file);
+                
+                let data = {};
+                data['token'] = token;
+                data['file'] = formData;
+                data['name'] = filename;
+                
+                apiMapPost(data).then(res=>{
+                    setUpload(false);
+                    updateData();
+                    setDataStatus("上传完毕");
+                    console.log(res);
+                }).catch(err => {
+                    // 後端沒有擋擋名錯誤
+                    console.log(err.response.data);
+                    alert('档名有误');
+                })
+
+            }else{
                 alert('档名有误');
-             })
+                document.getElementById('contained-button-file').value = null;
+            }
         } else {
             setDataStatus("No File Chosen");
         }

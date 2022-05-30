@@ -12,10 +12,10 @@ export function WorkExperiences({list_data, ...rest}) {
     const display = list_data.map(
       exp => {
         return (
-          <Card sx={{m:1
+          <Card sx={{m:1, 
           }}
           key={exp.project}>
-            <CardContent>
+            <CardContent >
                 <Table>
                   <TableHead sx={{background:"#272d3a"}}> 
                     <TableRow>
@@ -53,7 +53,7 @@ export function WorkExperiences({list_data, ...rest}) {
   };
   
   return (
-    <Box sx={{ pt: 3 }}>
+    <Box sx={{ pt: 3,minWidth:'100%' }}>
       <Button variant="contained" onClick={handleClickOpen}>
         查看
       </Button>
@@ -62,6 +62,7 @@ export function WorkExperiences({list_data, ...rest}) {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        sx={{minWidth:'900px'}}
       >
         <DialogTitle id="alert-dialog-title">
           經驗

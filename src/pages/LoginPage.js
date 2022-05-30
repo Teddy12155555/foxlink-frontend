@@ -57,10 +57,13 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                             });
                             setAuth(true);
                             setOpen(true);
+                        }else {
+                            alert("权限不足");
+                            return;
                         }
                     }).catch(err =>{
-                        console.log(err);
                         alert("权限不足");
+                        return;
                     })
                 }
             }

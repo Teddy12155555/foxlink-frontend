@@ -39,7 +39,7 @@ export default function Map({token, ...rest}) {
 
     let displayWorkShop = "";
     const style = {
-        'max-width': '100%',
+        'maxWidth': '100%',
       };
     useEffect(()=> {
         apiWorkShopList(token).then(res => {
