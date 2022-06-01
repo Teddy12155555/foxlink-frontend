@@ -22,7 +22,8 @@ export function Parameter({csv_data, ...rest}) {
   };
   
   return (
-    <Box sx={{ pt: 3, minWidth: '70vw' }}>
+    <Box sx={{ pt: 3, display: 'flex',
+    justifyContent: 'center' }} >
       <Button variant="contained" onClick={handleClickOpen}>
         查看 Parameter
       </Button>
@@ -31,6 +32,7 @@ export function Parameter({csv_data, ...rest}) {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullScreen
       >
         <DialogTitle id="alert-dialog-title">
           Parameter
@@ -41,10 +43,11 @@ export function Parameter({csv_data, ...rest}) {
             <ExcelTableView keys={data['keys']} datas={data['datas']}/>
           }
         </DialogContent>
-        <DialogActions >
-          <Button onClick={handleClose} autoFocus variant="contained">
+        <DialogActions sx={{ pt: 3, display: 'flex',
+          justifyContent: 'center' }}>
+            <Button onClick={handleClose} autoFocus variant="contained" size="large">
             關閉
-          </Button>
+            </Button>
         </DialogActions>
       </Dialog>
       </Box>

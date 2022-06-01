@@ -7,7 +7,7 @@ import BrokenImageSharpIcon from '@mui/icons-material/BrokenImageSharp';
 
 export function WorkExperiences({list_data, ...rest}) {
   useEffect(()=> {
-    let keys = ["project", "process", "line", "exp"]
+    let keys = ["project", "process","device_name", "line", "exp"]
 
     const display = list_data.map(
       exp => {

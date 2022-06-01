@@ -66,19 +66,6 @@ export default function MapUpload({token, ...rest}) {
         }).catch(err => {
         });
     }
-    const fetchData = (name) => {
-        let data = {
-            name:name,
-            token:token
-        }
-        apiDevicesData(data).then(res=>{
-            let keys = Object.keys(res.data[0]);
-            setKeys(keys);
-            setDatas(res.data);
-        }).catch(err=>{
-
-        })
-    }
 
     const handleFileChange = (e) => {
         if(e.target.files.length > 0){
@@ -103,11 +90,11 @@ export default function MapUpload({token, ...rest}) {
                     setUpload(false);
                     updateData();
                     setDataStatus("上传完毕");
-                    console.log(res);
                 }).catch(err => {
                     // 後端沒有擋擋名錯誤
-                    console.log(err.response.data);
+                    //console.log(err.response.data);
                     alert('档名有误');
+                    alert("请重新上传！");
                 })
 
             }else{

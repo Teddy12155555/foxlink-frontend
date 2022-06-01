@@ -192,7 +192,9 @@ export default function EventbookUpload({token, ...rest}) {
                 }
                 
              }).catch(err => {
-                console.log(err);
+                 alert("请重新上传！");
+                 updateData();
+                //console.log(err);
              })
         } else {
             setDataStatus("No File Chosen");

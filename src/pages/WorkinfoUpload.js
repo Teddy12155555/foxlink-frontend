@@ -252,7 +252,9 @@ export default function WorkerinfoUpload({token, ...rest}) {
                     setParameter(csv_data)
                 }
              }).catch(err => {
-                console.log(err.response.data);
+                //console.log(err.response.data);
+                alert("请重新上传！");
+                UpdateData();
              })
         } else {
             setDataStatus("No File Chosen");

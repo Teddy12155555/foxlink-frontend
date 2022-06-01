@@ -138,6 +138,8 @@ export default function DevicesUpload({token, ...rest}) {
                 }
              }).catch(err => {
                 console.log(err.response.data);
+                alert("请重新上传！");
+                updateData();
              })
         } else {
             setDataStatus("No File Chosen");
