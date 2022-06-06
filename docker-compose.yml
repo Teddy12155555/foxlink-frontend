@@ -1,7 +1,7 @@
 version: '3'
 services:
-        foxlink_frontend:
-                build: .
-                ports:
-                        - 43114:3000
-                command: ["npm", "start"]
+    foxlink_frontend:
+        build: .
+        ports:
+            - 8083:3000
+        command: ['npm', 'start']
