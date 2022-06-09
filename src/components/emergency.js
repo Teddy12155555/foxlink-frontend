@@ -22,7 +22,7 @@ export function Emergency({list_data, ...rest}) {
                     任务 ID : {mission.mission_id}
                   </Typography>
                   <Typography>
-                  装置 ID : {mission.device_id}
+                  装置 ID : {mission.device.device_id}
                   </Typography>
                   <Typography>
                   类别 : {mission.category}

@@ -93,7 +93,8 @@ export default function Status({authed, ...rest}) {
             item
             lg={4}
           >
-            <Emergency list_data={[]} rate={100}/>
+            {statusData['current_emergency_mission'] && 
+            <Emergency list_data={statusData['current_emergency_mission']}/>}
           </Grid>
           <Grid
             item
