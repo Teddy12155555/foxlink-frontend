@@ -24,7 +24,7 @@ export function Emergency({list_data, ...rest}) {
                   <Typography>
                   装置 ID : {mission.device.device_id}
                   </Typography>
-                  <Typography>
+                  {/* <Typography>
                   类别 : {mission.category}
                   </Typography>
                   <Typography>
@@ -53,7 +53,7 @@ export function Emergency({list_data, ...rest}) {
                       )
                     })
                   }
-                  </Typography>
+                  </Typography> */}
               </CardContent>
             </Card>
           )
