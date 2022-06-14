@@ -49,7 +49,7 @@ const Input = styled('input')({
 });
 
 export default function DevicesUpload({token, ...rest}) {
-    const [dataStatus, setDataStatus] = useState(" No File Chosen");
+    const [dataStatus, setDataStatus] = useState("No File Chosen");
     const [uploading, setUpload] = useState(false);
     // init workshop
     const [selectItem, setSelectItem] = useState("");
