@@ -13,7 +13,6 @@ import { Box,
     InputLabel,
     Select,
     MenuItem,
-    Container 
 } from '@mui/material';
 
 import ExcelTableView from "../components/excel-table-view";
@@ -161,13 +160,13 @@ export default function EventbookUpload({token, ...rest}) {
             data['file'] = formData;
             
             apiEventbook(data).then(res=>{
-                if(res.status == 201){
+                if(res.status === 201){
                     setUpload(false);
                     let rawdata = res.data.split(/\n/);
                     let keys = [];
                     let processed_data = []
                     rawdata.map((line, i) => {
-                        if(i == 0) {
+                        if(i === 0) {
                             keys = line.split(',');
                             if(keys.length > 0){
                                 keys[0] = 'idx';

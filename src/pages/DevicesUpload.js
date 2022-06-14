@@ -13,8 +13,6 @@ import { Box,
     InputLabel,
     Select,
     MenuItem,
-    Tabs,
-    Tab
 } from '@mui/material';
 
 import ExcelTableView from "../components/excel-table-view";
@@ -97,26 +95,32 @@ export default function DevicesUpload({token, ...rest}) {
     }
 
     const handleFileChange = (e) => {
+        console.log('DEBUG : Upload Btn onClick');
         if(e.target.files.length > 0){
+            console.log('DEBUG : Got File');
             setDataStatus(e.target.files[0].name);
+            console.log('DEBUG : Start to upload');
             setUpload(true);
             
             const file = e.target.files[0];
             let formData = new FormData();
             formData.append("file", file);
             formData.append("clear_all", true);
+            console.log('DEBUG : FormData has been setup');
             
             let data = {};
             data['token'] = token;
             data['file'] = formData;
-            
+            console.log('DEBUG : Requesting');
             apiDevices(data).then(res=>{
+                console.log('DEBUG : Got Request Res.......');
                 if(res.status === 201){
                     setUpload(false);
                     updateData();
                     let rawdata = res.data['parameter'].split(/\n/);
                     let processed_data = [];
                     let keys = []
+                    console.log('DEBUG : Parameter data processing');
                     rawdata.map((line, i) => {
                         if(i==0){
                             keys = line.split(',');
@@ -134,9 +138,11 @@ export default function DevicesUpload({token, ...rest}) {
                         'keys' : keys,
                         'datas' : processed_data
                     }
+                    console.log('DEBUG : Upload process done');
                     setParameter(csv_data);
                 }
              }).catch(err => {
+                console.log('DEBUG : Got Request Err.......');
                 console.log(err.response.data);
                 alert("请重新上传！");
                 updateData();
