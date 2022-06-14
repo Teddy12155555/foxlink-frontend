@@ -290,7 +290,7 @@ export default function EventbookUpload({token, ...rest}) {
                         <Select
                             labelId="workshop-label"
                             id="workshop-select"
-                            value={workshop}
+                            value={workshop == null ? '' : workshop}
                             onChange={handleWorkshopChange}
                         >
                             {
@@ -305,7 +305,7 @@ export default function EventbookUpload({token, ...rest}) {
                             <Select
                                 labelId="project-label"
                                 id="project-select"
-                                value={project}
+                                value={project == null ? '' : project}
                                 onChange={handleProjectChange}
                             >
                                 {
@@ -321,7 +321,7 @@ export default function EventbookUpload({token, ...rest}) {
                             <Select
                                 labelId="sheet-label"
                                 id="sheet-select"
-                                value={sheet}
+                                value={sheet == null ? '' : sheet}
                                 onChange={handleSheetChange}
                             >
                                 {

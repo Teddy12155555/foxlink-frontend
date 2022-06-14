@@ -66,6 +66,7 @@ export default function DevicesUpload({token, ...rest}) {
     }, [])
 
     const updateData = () => {
+        setUpload(false);
         setWorkshop(null);
         setKeys(null);
         setDatas(null);
@@ -113,7 +114,6 @@ export default function DevicesUpload({token, ...rest}) {
                 if(res.status === 201){
                     setUpload(false);
                     updateData();
-                    //setParameter(res.data['parameter']);
                     let rawdata = res.data['parameter'].split(/\n/);
                     let processed_data = [];
                     let keys = []
@@ -234,7 +234,7 @@ export default function DevicesUpload({token, ...rest}) {
                         <Select
                             labelId="workshop-label"
                             id="workshop-select"
-                            value={workshop}
+                            value={workshop == null ? '' : workshop}
                             onChange={handleWorkshopChange}
                         >
                             {

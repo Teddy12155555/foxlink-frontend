@@ -129,7 +129,7 @@ export default function MapUpload({token, ...rest}) {
                 }}
                 >
                     <label htmlFor="contained-button-file">
-                        <Input type="file" accept="image/png" id="contained-button-file"  onChange={handleFileChange} /> 
+                        <Input type="file" accept="image/png" id="contained-button-file"  onChange={handleFileChange} value=''/> 
                         <LoadingButton
                             color="success" 
                             variant="contained" 
