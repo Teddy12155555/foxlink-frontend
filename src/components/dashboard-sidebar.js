@@ -40,23 +40,25 @@ export const DashboardSidebar = ({idx, setIdx}) => {
 
     const upload_items = [
       {
-        index: 0,
-        icon: (<InfoIcon fontSize="small" />),
-        title: '员工专职表 上传',
-        active: false
-      },
-      {
         index: 1,
         icon: (<LayoutIcon fontSize="small" />),
         title: 'Layout 座标表 上传',
         active: false
       },
       {
+        index: 0,
+        icon: (<InfoIcon fontSize="small" />),
+        title: '员工专职表 上传',
+        active: false
+      },
+      /*
+      {
         index: 2,
         icon: (<DeviceIcon fontSize="small" />),
         title: '专案 Device 事件簿 上传',
         active: false
       },
+      */
       {
         index : 6,
         icon: (<MapIcon fontSize="small"/>),
