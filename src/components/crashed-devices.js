@@ -15,13 +15,16 @@ export function CrashedDevices({list_data, ...rest}) {
             }}
             key={device.device}>
               <CardContent>
-                  <Typography
+                    <Typography
                       color="textSecondary"
                       gutterBottom
                       variant="overline"
                       fontSize="large"
                     >
-                      {device.device}
+                      {device.device_id}
+                    </Typography>
+                    <Typography>
+                      装置名称 : {device.device_cname}
                     </Typography>
                     <Typography>
                       異常次數 : {device.count}
