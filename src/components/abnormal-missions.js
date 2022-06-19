@@ -5,14 +5,18 @@ import { Avatar, Box, Card, CardContent, Grid,
 } from '@mui/material';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 
+const CONTENT = {
+  title:"前十大历史机台异常任务",
+}
+
 export function AbnormalMissions({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         mission => {
           return (
-            <Card sx={{m:1
-            }}
+            <Card sx={{m:1, minWidth: "500px"
+          }}
             key={mission.mission_id}>
               <CardContent>
                   <Typography
@@ -25,6 +29,9 @@ export function AbnormalMissions({list_data, ...rest}) {
                   </Typography>
                   <Typography>
                     装置 ID : {mission.device_id}
+                  </Typography>
+                  <Typography>
+                    装置名称 : {mission.device_cname}
                   </Typography>
                   <Typography>
                   类别 : {mission.category}
@@ -98,7 +105,7 @@ export function AbnormalMissions({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Top Abnormal Missions This Month"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {

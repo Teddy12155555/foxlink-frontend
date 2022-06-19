@@ -5,14 +5,19 @@ import { Avatar, Box, Card, CardContent, Grid,
 } from '@mui/material';
 import BrokenImageSharpIcon from '@mui/icons-material/BrokenImageSharp';
 
+const CONTENT = {
+  title:"经常异常装置",
+
+}
+
 export function CrashedDevices({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         device => {
           return (
-            <Card sx={{m:1
-            }}
+            <Card sx={{m:1, minWidth: "500px"
+          }}
             key={device.device}>
               <CardContent>
                     <Typography
@@ -96,7 +101,7 @@ export function CrashedDevices({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Most Frequent Crashed Devices"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {

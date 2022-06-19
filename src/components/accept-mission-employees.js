@@ -6,13 +6,18 @@ import { Avatar, Box, Card, CardContent, Grid,
 
 import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
 
+const CONTENT = {
+  title:"接受任务总数的员工排名",
+
+}
+
 export function AcceptMissionEmployees({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         employee => {
           return (
-            <Card sx={{m:1
+            <Card sx={{m:1, minWidth: "500px"
             }}
             key={employee.username}>
               <CardContent>
@@ -22,13 +27,13 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    ID : {employee.username}
+                    员工 ID : {employee.username}
                   </Typography>
                   <Typography>
                     姓名 : {employee.full_name}
                   </Typography>
                   <Typography>
-                  接受总数 : {employee.count}
+                    接受总数 : {employee.count}
                   </Typography>
               </CardContent>
             </Card>
@@ -49,13 +54,13 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
   
   return (
     <Card
-    sx={{ height: '100%' }}
+    sx={{ height: '100%'}}
   >
     <CardContent>
       <Grid
         container
         spacing={3}
-        sx={{ justifyContent: 'space-between' }}
+        sx={{ justifyContent: 'space-between'}}
       >
         <Grid item>
           <Typography
@@ -94,9 +99,10 @@ export function AcceptMissionEmployees({list_data, ...rest}) {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        sx={{width: '100%'}}
       >
         <DialogTitle id="alert-dialog-title">
-          {"Top Most Accept Mission Employees"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {

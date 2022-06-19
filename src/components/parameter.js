@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { Table, TableRow, TableHead, TableCell,  Box, Card, CardContent, Grid, 
-  Typography, Dialog, DialogTitle, DialogContent, Button, DialogActions, TableBody
+import { Box, Dialog, DialogTitle, DialogContent, Button, DialogActions, TableBody
 } from '@mui/material';
-import BrokenImageSharpIcon from '@mui/icons-material/BrokenImageSharp';
 
 import ExcelTableView from "../components/excel-table-view";
 
@@ -35,7 +33,7 @@ export function Parameter({csv_data, ...rest}) {
         fullScreen
       >
         <DialogTitle id="alert-dialog-title">
-          Parameter
+        参数
         </DialogTitle>
         <DialogContent>
           {
@@ -46,7 +44,7 @@ export function Parameter({csv_data, ...rest}) {
         <DialogActions sx={{ pt: 3, display: 'flex',
           justifyContent: 'center' }}>
             <Button onClick={handleClose} autoFocus variant="contained" size="large">
-            關閉
+            关闭
             </Button>
         </DialogActions>
       </Dialog>

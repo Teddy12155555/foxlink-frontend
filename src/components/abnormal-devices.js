@@ -5,14 +5,18 @@ import { Avatar, Box, Card, CardContent, Grid,
 } from '@mui/material';
 import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';
 
+const CONTENT = {
+  title: "机台异常处理时间/次数",
+}
+
 export function AbnormalDevices({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         device => {
           return (
-            <Card sx={{m:1
-            }}
+            <Card sx={{m:1, minWidth: "500px"
+          }}
             key={device.device_id}>
               <CardContent>
                   <Typography
@@ -24,13 +28,16 @@ export function AbnormalDevices({list_data, ...rest}) {
                     装置 ID : {device.device_id}
                   </Typography>
                   <Typography>
-                  category : {device.category}
+                  装置名称 : {device.device_cname}
+                  </Typography>
+                  <Typography>
+                  类别 : {device.category}
                   </Typography>
                   <Typography>
                   信息 : {device.message}
                   </Typography>
                   <Typography>
-                  top_great_assignees : {
+                  历史最佳指派员工 : {
                     device.top_great_assignees && 
                     device.top_great_assignees.map(user=>{
                       return (
@@ -42,13 +49,10 @@ export function AbnormalDevices({list_data, ...rest}) {
                               variant="overline"
                               fontSize="small"
                           >
-                            ID : {user.username}
+                          员工 ID : {user.username}
                           </Typography>
                           <Typography fontSize="small">
-                            full_name : {user.full_name}
-                          </Typography>
-                          <Typography fontSize="small">
-                          duration : {user.duration}
+                          姓名 : {user.full_name}
                           </Typography>
                           </CardContent>
                         </Card>
@@ -122,7 +126,7 @@ export function AbnormalDevices({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Top Abnormal Devices"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {

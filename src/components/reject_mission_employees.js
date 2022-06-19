@@ -5,14 +5,18 @@ import { Avatar, Box, Card, CardContent, Grid,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+const CONTENT = {
+  title: "拒绝任务总数的员工排名",
+}
+
 export function RejectMissionEmployees({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         employee => {
           return (
-            <Card sx={{m:1
-            }} key={employee.username}>
+            <Card sx={{m:1, minWidth: "500px"
+          }} key={employee.username}>
               <CardContent>
                   <Typography
                       color="textSecondary"
@@ -20,7 +24,7 @@ export function RejectMissionEmployees({list_data, ...rest}) {
                       variant="overline"
                       fontSize="large"
                   >
-                    ID : {employee.username}
+                    员工 ID : {employee.username}
                   </Typography>
                   <Typography>
                     姓名 : {employee.full_name}
@@ -94,7 +98,7 @@ export function RejectMissionEmployees({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Top Most Reject Mission Employees"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {

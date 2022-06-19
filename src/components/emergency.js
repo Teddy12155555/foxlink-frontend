@@ -4,14 +4,18 @@ import { Avatar, Box, Card, CardContent, Grid,
 } from '@mui/material';
 import ReportGmailerrorredSharpIcon from '@mui/icons-material/ReportGmailerrorredSharp';
 
+const CONTENT = {
+  title : "紧急通报",
+}
+
 export function Emergency({list_data, ...rest}) {
   useEffect(()=> {
     if(list_data.length > 0){
       const display = list_data.map(
         mission => {
           return (
-            <Card sx={{m:1
-            }} key={mission.mission_id}>
+            <Card sx={{m:1, minWidth: "500px"
+          }} key={mission.mission_id}>
               <CardContent>
                   <Typography
                       color="textSecondary"
@@ -23,6 +27,9 @@ export function Emergency({list_data, ...rest}) {
                   </Typography>
                   <Typography>
                   装置 ID : {mission.device.device_id}
+                  </Typography>
+                  <Typography>
+                  装置名称 : {mission.device.device_id}
                   </Typography>
                   {/* <Typography>
                   类别 : {mission.category}
@@ -59,6 +66,12 @@ export function Emergency({list_data, ...rest}) {
           )
         }
       )
+      setData(display);
+    }
+    else{
+      const display = <Card sx={{m:1}} key="no-data"><CardContent>
+        暂时无紧急通报任务
+        </CardContent></Card>;
         setData(display);
     }
 }, [])
@@ -120,7 +133,7 @@ export function Emergency({list_data, ...rest}) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Current Emergency Mission"}
+          {CONTENT.title}
         </DialogTitle>
         <DialogContent>
           {
