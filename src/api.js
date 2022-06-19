@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const baseRequest = axios.create({
-  baseURL: 'http://140.118.157.9:8080'
+	baseURL: 'http://140.118.157.9:8080',
+  headers: {"Access-Control-Allow-Origin": "*"},
 });
 
 
