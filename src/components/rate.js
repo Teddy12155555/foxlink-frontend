@@ -26,7 +26,7 @@ export const Rate = ({rate, ...rest}) => (
             color="textPrimary"
             variant="h4"
           >
-            {rate}%
+            {rate * 100}%
           </Typography>
         </Grid>
         <Grid item>
@@ -43,7 +43,7 @@ export const Rate = ({rate, ...rest}) => (
       </Grid>
       <Box sx={{ pt: 3 }}>
         <LinearProgress
-          value={rate}
+          value={rate * 100}
           variant="determinate"
         />
       </Box>
