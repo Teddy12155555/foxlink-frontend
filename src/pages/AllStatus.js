@@ -100,8 +100,8 @@ export default function AllStatus({ authed, ...rest }) {
     }
     const parseTimeZone = (time_string) => {
         let dt = new Date(time_string);
+        dt.setTime(dt.getTime() - dt.getTimezoneOffset() * 60 * 1000);
         let formated_str = dt.toLocaleDateString() + "  " + dt.toLocaleTimeString('zh-CN', { hour12: false });
-
         return formated_str;
     }
     const parseSeconds = (sencond_str) => {
