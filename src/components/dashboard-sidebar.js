@@ -5,7 +5,8 @@ import { ChartBar as StatusIcon } from '../icons/chart-bar';
 import { Layout as LayoutIcon } from '../icons/layout';
 import { QRCode as QRCodeIcon } from '../icons/qrcode';
 import { Info as InfoIcon } from '../icons/info';
-import { Device as DeviceIcon } from '../icons/device';
+
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import MapIcon from '@mui/icons-material/Map';
 
 import { Logo } from './logo';
@@ -34,6 +35,12 @@ export const DashboardSidebar = ({idx, setIdx}) => {
           index: 5,
           icon: (<MapIcon fontSize="small" />),
           title: '车间地图',
+          active: false
+        },
+        {
+          index : 7,
+          icon: (<SummarizeIcon fontSize="small"/>),
+          title: '白名單',
           active: false
         }
       ];

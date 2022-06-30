@@ -9,11 +9,16 @@ import EventbookUpload from "./EventbookUpload";
 import DevicesUpload from "./DevicesUpload";
 import WorkerinfoUpload from "./WorkinfoUpload";
 import MapUpload from "./MapUpload";
+import WhiteList from "./WhiteList";
 
 import MuiAlert from '@mui/material/Alert';
 import { Container,Snackbar,Box } from "@mui/material";
 
 import {DashboardLayout} from "../components/dashboard-layout";
+
+const PAGE_INDEX = {
+
+}
 
 export default function Homepage() {
     const DEBUG = false;
@@ -44,11 +49,12 @@ export default function Homepage() {
             case -1: return (<AllStatus authed={authed} />);
             case 0: return(<WorkerinfoUpload token={token}/>);
             case 1: return(<DevicesUpload token={token}/>);
-            case 2: return(<EventbookUpload token={token} />);
-            case 3: return(<Status authed={authed} />);
+            case 2: return(<EventbookUpload token={token} />); // not used, only for testing
+            case 3: return(<Status token={token} />);
             case 4: return(<QrcodeDownload token={token}/>);
             case 5: return(<Map token={token}/>);
             case 6: return(<MapUpload token={token} />);
+            case 7: return(<WhiteList token={token} />);
         }
     }
 

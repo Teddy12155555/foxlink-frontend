@@ -7,8 +7,6 @@ import {
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
 import { Rate } from "../components/rate.js";
 import { Emergency } from "../components/emergency.js";
 import { CrashedDevices } from "../components/crashed-devices.js";
@@ -16,8 +14,9 @@ import { AcceptMissionEmployees } from "../components/accept-mission-employees.j
 import { RejectMissionEmployees } from "../components/reject_mission_employees.js";
 import { AbnormalMissions } from "../components/abnormal-missions.js";
 import { AbnormalDevices } from "../components/abnormal-devices.js";
+import { MissionNeedRepair } from "../components/mission-need-repair.js";
 
-import { apiStatistics } from "../api.js";
+import { apiStatistics, apiMissionNeedRepair } from "../api.js";
 
 const darkTheme = createTheme({
   palette: {
@@ -36,11 +35,12 @@ const darkTheme = createTheme({
   },
 });
 
-export default function Status({ authed, ...rest }) {
+export default function Status({ token, ...rest }) {
   const UPDATE_SECOND = 5;
   const _isMounted = useRef(true);
 
-  const [statusData, setData] = useState({});
+  const [statusData, setData] = useState();
+  const [missionData, setMissions] = useState();
   const [timerId, setTimerId] = useState();
   const [updateCount, setUpdateCount] = useState(UPDATE_SECOND);
 
@@ -77,12 +77,16 @@ export default function Status({ authed, ...rest }) {
     apiStatistics(null).then(res => {
       setData(res.data);
     })
+    apiMissionNeedRepair(token).then(res => {
+      setMissions(res.data);
+    })
   }
 
   return (
     <ThemeProvider theme={darkTheme}>
-
-      <Grid
+      {
+        statusData && missionData && 
+        <Grid
         container
         spacing={3}
       >
@@ -155,7 +159,17 @@ export default function Status({ authed, ...rest }) {
             <AbnormalDevices list_data={statusData.devices_stats.top_abnormal_devices} />
           }
         </Grid>
+        <Grid
+        item
+        lg={4}
+         >
+           {
+            missionData &&
+            <MissionNeedRepair list_data={missionData} />
+           }
+        </Grid>
       </Grid>
+      }
     </ThemeProvider>
 
   );

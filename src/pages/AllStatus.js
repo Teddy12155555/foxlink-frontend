@@ -18,6 +18,7 @@ import {
 import { SeverityPill } from '../components/severity-pill';
 
 import { apiWorkStatus } from "../api.js";
+import { sort } from "d3";
 
 const darkTheme = createTheme({
     palette: {
@@ -67,36 +68,82 @@ const CONTENT = {
     worker_id: "员工 ID",
     name: "姓名",
     last_event_end_date: "上次任务结束时间",
-    at_device: "员工位置",
+    at_device_cname: "员工位置",
     worker_status: "员工状态",
     total_dispatches: "派工总数",
-    mission_duration: "任务执行时长",
+    mission_duration: "任务时长",
+    repair_duration: "维修时长",
     update: "更新资料"
 }
 
 export default function AllStatus({ authed, ...rest }) {
     const [statusData, setData] = useState([]);
+    const [sortStatus, setSort] = useState("none");
 
     useEffect(() => {
-        updataData();
+        updataData("none");
+        setSort("none");
         return () => {
-
         }
     }, [])
 
-    const updataData = () => {
+    const handleUpdate = () => {
+        updataData("none");
+    }
+ 
+    const updataData = (sort) => {
         apiWorkStatus(null).then(res => {
-            setData(parseData(res.data));
+            setData(parseData(res.data, sort).sort(function(a, b){
+                return b.sort - a.sort;
+            }));
         })
     }
 
-    const parseData = (data) => {
-        return data.map(
-            (worker, index) => {
-                worker.id = index;
-                return worker;
+    const sortData = (e) => {
+        let sort_type = e.currentTarget.id;
+        if(sort_type == "none"){
+            setSort("none");
+            updataData("none");
+        }else{
+            setSort(sort_type);
+            updataData(sort_type);
+        }
+        updataData(sort_type);
+    }
+
+    const parseData = (data, sort) => {
+        if(sort == "none"){
+            return data.map(
+                (worker, index) => {
+                    worker.sort = 1;
+                    worker.id = index;
+                    return worker;
+                }
+            );
+        }else{
+            if(sort === "status"){
+                return data.map(
+                    (worker, index) => {
+                        let s = worker.status;
+                        if(s === "Working"){worker.sort = 3;}
+                        else if(s === "Idle"){worker.sort = 2;}
+                        else{worker.sort = 1;}
+                        worker.id = index;
+                        return worker;
+                    }
+                );
+                
+            }else if (sort === "name"){
+                return data.map(
+                    (worker, index) => {
+                        let l = worker.worker_id.length;
+                        worker.sort = parseInt(worker.worker_id[l-1], 10);
+                        worker.id = index;
+                        return worker;
+                    }
+                );
             }
-        );
+        }
     }
     const parseTimeZone = (time_string) => {
         let dt = new Date(time_string);
@@ -124,7 +171,7 @@ export default function AllStatus({ authed, ...rest }) {
                         color="primary"
                         size="large"
                         variant="text"
-                        onClick={updataData}
+                        onClick={handleUpdate}
                         sx={{ mr: 3 }}
                     >
                         {CONTENT.update}
@@ -137,7 +184,7 @@ export default function AllStatus({ authed, ...rest }) {
                             <TableHead sx={{ background: "#272d3a" }}>
                                 <TableRow>
                                     <TableCell>
-                                        {CONTENT.worker_id}
+                                        <Button id="name" onClick={sortData}>{CONTENT.worker_id}</Button>
                                     </TableCell>
                                     <TableCell>
                                         {CONTENT.name}
@@ -146,16 +193,19 @@ export default function AllStatus({ authed, ...rest }) {
                                         {CONTENT.last_event_end_date}
                                     </TableCell>
                                     <TableCell >
-                                        {CONTENT.at_device}
+                                        {CONTENT.at_device_cname}
                                     </TableCell>
                                     <TableCell>
-                                        {CONTENT.worker_status}
+                                        <Button id="status" onClick={sortData}>{CONTENT.worker_status}</Button>
                                     </TableCell>
                                     <TableCell>
                                         {CONTENT.total_dispatches}
                                     </TableCell>
                                     <TableCell>
                                         {CONTENT.mission_duration}
+                                    </TableCell>
+                                    <TableCell>
+                                        {CONTENT.repair_duration}
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
@@ -175,7 +225,7 @@ export default function AllStatus({ authed, ...rest }) {
                                             {parseTimeZone(worker.last_event_end_date)}
                                         </TableCell>
                                         <TableCell>
-                                            {worker.at_device}
+                                            {worker.at_device_cname}
                                         </TableCell>
                                         <TableCell>
                                             <SeverityPill
@@ -192,6 +242,9 @@ export default function AllStatus({ authed, ...rest }) {
                                         <TableCell>
                                             {worker.mission_duration == null ? "无" : parseSeconds(worker.mission_duration)}
                                         </TableCell>
+                                        <TableCell>
+                                            {worker.repair_duration == null ? "无" : parseSeconds(worker.repair_duration)}
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -201,6 +254,5 @@ export default function AllStatus({ authed, ...rest }) {
 
             </Card>
         </ThemeProvider>
-
     );
 }

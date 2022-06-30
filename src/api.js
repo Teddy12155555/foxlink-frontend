@@ -38,6 +38,13 @@ export const apiWorkStatus = (data) => baseRequest.get('/stats/worker-status', {
 
 });
 
+export const apiMissionNeedRepair = (token) => baseRequest.get('missions/?is_assigned=false&is_closed=false&is_cancel=false', {
+  headers : {
+    'accept': 'application/json',
+    'Authorization' : `Bearer ${token}`
+}
+});
+
 // List
 export const apiWorkShopList = (token) => baseRequest.get('/workshop/list', {
   headers : {
@@ -131,3 +138,31 @@ export const apiWorkerAll = (data) => baseRequest.get('/users/overview',
     }
 })
 
+// white list
+export const apiGetWhiteList = (workshop_name) => baseRequest.get(`/device/whitelist?workshop_name=${workshop_name}`, {
+  headers : {
+    'accept': 'application/json',
+}
+});
+export const apiGetDeviceRecommend = (workshop_name) => baseRequest.get(`/device/whitelist/recommend?workshop_name=${workshop_name}`, {
+  headers : {
+    'accept': 'application/json',
+}
+});
+export const apiGetDeviceNameById = (data) => baseRequest.get(`/device/${data['device_id']}`, {
+  headers:
+  {
+      'accept': 'application/json',
+      'Authorization' : `Bearer ${data['token']}`
+  }
+});
+export const apiGetWorkersByDevice = (data) => baseRequest.get(`/device/${data['device_id']}/workers?shift_type=${data['shift']}`, {
+  headers : {
+    'accept': 'application/json',
+}
+});
+export const apiPostAddWorkersWhitelist = (data) => baseRequest.post(`/device/${data['device_id']}/whitelist?username=${data['username']}`, {
+  headers : {
+    'accept': 'application/json',
+}
+});
