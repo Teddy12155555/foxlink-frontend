@@ -137,6 +137,8 @@ export default function WhiteList({ token, ...rest }) {
     } 
 
     const handleUpdate = () => {
+        setShift(null);
+        
         setWorkshop(null);
         setSelectItem(null);
         setDeviceSelect(null);
@@ -364,7 +366,9 @@ export default function WhiteList({ token, ...rest }) {
                             <TableBody>
                             <TableRow>
                                     <TableCell>
-                                        <FormControl >
+                                        {
+                                            workshop && 
+                                            <FormControl >
                                             <InputLabel id="shift-select">{CONTENT.shift}</InputLabel>
                                             <Select
                                             labelId="shift-select"
@@ -378,6 +382,7 @@ export default function WhiteList({ token, ...rest }) {
                                                 <MenuItem key={1} value={"night"}>夜</MenuItem>
                                             </Select>
                                         </FormControl>
+                                        }
                                     </TableCell>
                                     <TableCell>
                                         {
