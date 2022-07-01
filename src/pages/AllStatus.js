@@ -225,7 +225,9 @@ export default function AllStatus({ authed, ...rest }) {
                                             {parseTimeZone(worker.last_event_end_date)}
                                         </TableCell>
                                         <TableCell>
-                                            {worker.at_device_cname}
+                                            {
+                                              worker.at_device_cname == null ? worker.at_device : worker.at_device_cname
+                                            }
                                         </TableCell>
                                         <TableCell>
                                             <SeverityPill

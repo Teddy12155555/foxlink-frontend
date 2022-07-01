@@ -154,8 +154,13 @@ export default function WhiteList({ token, ...rest }) {
  
     // select change handler
     const shiftChange = (event) => {
+        setWorker(null);
+        setDevice(null);
+        setDeviceSelect(null);
+        setWorkSelect(null);
         let shift = event.target.value;
         setShift(shift);
+
         if(deviceRecommend != null){
             let promises = [];
             let allDevice = Object.keys(deviceRecommend[shift.toString()]);
@@ -172,10 +177,12 @@ export default function WhiteList({ token, ...rest }) {
         }
     }
     const deviceChange = (event) => {
+        setWorker(null);
+        setWorkSelect(null);
         setDevice(event.target.value);
         let data = {
             device_id: event.target.value.toString(),
-            shift: shift==="day"? true:false
+            shift: shift==="day"? false:true
         }
         
         apiGetWorkersByDevice(data).then(res=>{
@@ -247,7 +254,7 @@ export default function WhiteList({ token, ...rest }) {
                                 <Select
                                 labelId="demo-simple-select-label"
                                 id="workshop-select"
-                                value={shift}
+                                value={workshop}
                                 label="WorkShop"
                                 onChange={handleChange}
                                 sx={{minWidth:"200px"}}
