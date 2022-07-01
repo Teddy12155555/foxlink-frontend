@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import {  Typography, Container, InputLabel, MenuItem, Select,FormControl } from '@mui/material';
 
-import { apiGetWhiteList, apiGetDeviceNameById, apiWorkShopList, apiGetDeviceRecommend, apiGetWorkersByDevice, apiPostAddWorkersWhitelist} from "../api.js";
+import { apiGetWhiteList, apiGetDeviceNameById, apiWorkShopList, apiGetDeviceRecommend, apiGetWorkersByDevice, apiPostAddWorkersWhitelist, apiDeleteWorkersWhitelist} from "../api.js";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Message } from "@mui/icons-material";
@@ -74,7 +74,8 @@ const CONTENT = {
     update: "更新资料",
     shift: "班別",
     recommand: "推荐员工",
-    action: "新增"
+    action: "新增",
+    remove: "移除"
 }
 
 export default function WhiteList({ token, ...rest }) {
@@ -150,6 +151,21 @@ export default function WhiteList({ token, ...rest }) {
         }).catch(err => {
 
         });
+    }
+
+    const handDelete = (device_id, user_id) => {
+        let data = {
+            device_id: device_id,
+            username: user_id
+        }
+        apiDeleteWorkersWhitelist(data).then(res=>{
+            if(res.status==200){
+                alert('移除成功');
+                handleUpdate();
+            }
+        }).catch(err=>{
+            console.log(err);
+        })
     }
  
     // select change handler
@@ -283,6 +299,9 @@ export default function WhiteList({ token, ...rest }) {
                                     <TableCell >
                                         {CONTENT.name}
                                     </TableCell>
+                                    <TableCell >
+                                        {CONTENT.remove}
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -304,6 +323,11 @@ export default function WhiteList({ token, ...rest }) {
                                             </TableCell>
                                             <TableCell>
                                                 {device.employee[0].full_name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    <Button key={device.id} color="error" onClick={()=>handDelete(device.id, device.employee[0].username)}>移除白名單</Button>
+                                                }
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -396,7 +420,7 @@ export default function WhiteList({ token, ...rest }) {
                                         }
                                     </TableCell>
                                     <TableCell >
-                                        <Button onClick={addWhiteList}>加入白名單</Button>
+                                        <Button onClick={addWhiteList} color="success">加入白名單</Button>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

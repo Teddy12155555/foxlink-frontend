@@ -166,3 +166,8 @@ export const apiPostAddWorkersWhitelist = (data) => baseRequest.post(`/device/${
     'accept': 'application/json',
 }
 });
+export const apiDeleteWorkersWhitelist = (data) => baseRequest.delete(`/device/${data['device_id']}/whitelist?username=${data['username']}`, {
+  headers : {
+    'accept': 'application/json',
+}
+});
