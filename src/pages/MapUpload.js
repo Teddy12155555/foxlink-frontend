@@ -70,11 +70,13 @@ export default function MapUpload({token, ...rest}) {
     const handleFileChange = (e) => {
         if(e.target.files.length > 0){
             let filename = e.target.files[0].name;
-            let regex = filename.match(/_(.+)_/);
-            if(regex){
+            let regex = filename.match(/Layout_(.+)_([0-9]+)/);
+            
+            if(regex && regex.length == 3){
                 let filename = regex[1];
                 setDataStatus(filename);
                 //filename = filename.match(/(.*)\.[^.]+$/)[1];
+                
                 setUpload(true);
 
                 const file = e.target.files[0];
@@ -98,7 +100,7 @@ export default function MapUpload({token, ...rest}) {
                 })
 
             }else{
-                alert('档名有误');
+                alert('档名有误 请重新上传！');
                 document.getElementById('contained-button-file').value = null;
             }
         } else {
