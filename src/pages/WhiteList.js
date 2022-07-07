@@ -187,7 +187,7 @@ export default function WhiteList({ token, ...rest }) {
             })
             Promise.all(promises).then(response => {
                 setDeviceSelect(response.map(item=>{
-                    return(<MenuItem key={item['id']} value={item['id']}>{`${item["name"]} 异常次数：${deviceRecommend[shift.toString()][item['id'].toString()]} `}</MenuItem>)
+                    return(<MenuItem key={item['id']} value={item['id']}>{`(${item["project"]}) ${item["name"]} 异常次数：${deviceRecommend[shift.toString()][item['id'].toString()]} `}</MenuItem>)
                 }))
             })
             
