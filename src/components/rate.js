@@ -26,7 +26,7 @@ export const Rate = ({rate, ...rest}) => (
             color="textPrimary"
             variant="h4"
           >
-            {rate * 100}%
+            {(rate * 100).toFixed(2)}%
           </Typography>
         </Grid>
         <Grid item>
