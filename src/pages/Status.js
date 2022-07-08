@@ -75,6 +75,7 @@ export default function Status({ token, ...rest }) {
   }
   const updatedata = () => {
     apiStatistics(null).then(res => {
+      console.log(res.data);
       setData(res.data);
     })
     apiMissionNeedRepair(token).then(res => {

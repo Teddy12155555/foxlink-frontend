@@ -184,7 +184,8 @@ export default function AllStatus({ authed, ...rest }) {
                             <TableHead sx={{ background: "#272d3a" }}>
                                 <TableRow>
                                     <TableCell>
-                                        <Button id="name" onClick={sortData}>{CONTENT.worker_id}</Button>
+                                        {/* <Button id="name" onClick={sortData}>{CONTENT.worker_id}</Button> */}
+                                        {CONTENT.worker_id}
                                     </TableCell>
                                     <TableCell>
                                         {CONTENT.name}
