@@ -9,9 +9,12 @@ import { Box,
     Typography, 
     createTheme, 
     ThemeProvider,
-    MenuItem
+    MenuItem,
+    Button,
+    Snackbar
 } from '@mui/material';
 
+import MuiAlert from '@mui/material/Alert';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -19,7 +22,9 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import {Upload} from '../icons/upload';
 
 import {apiMapPost, apiWorkShopList, apiDevicesData} from "../api.js";
-import { Alert } from "bootstrap";
+
+import { AlertComponent } from "../components/alert-component";
+
 
 const darkTheme = createTheme({
     palette: {
@@ -50,12 +55,19 @@ export default function MapUpload({token, ...rest}) {
     // init workshop
     const [selectItem, setSelectItem] = useState("");
     const [workshop, setWorkshop] = useState("");
-    const [keys, setKeys] = useState();
-    const [datas, setDatas] = useState();
+    
+    const [alert, setAlert] = useState(false);
+    const [errmsg, setErrMsg] = useState();
 
     useEffect(()=>{
         updateData();
     }, [])
+
+    useEffect(()=>{
+        if(errmsg){
+            setAlert(true);
+        }
+    }, [errmsg])
 
     const updateData = () => {
         setWorkshop(null);
@@ -64,6 +76,7 @@ export default function MapUpload({token, ...rest}) {
                 return(<MenuItem key={name} value={name}>{name}</MenuItem>)
             }))
         }).catch(err => {
+            setErrMsg(err.response.statusText);
         });
     }
 
@@ -75,7 +88,6 @@ export default function MapUpload({token, ...rest}) {
             if(regex && regex.length == 3){
                 let filename = regex[1];
                 setDataStatus(filename);
-                //filename = filename.match(/(.*)\.[^.]+$/)[1];
                 
                 setUpload(true);
 
@@ -94,13 +106,11 @@ export default function MapUpload({token, ...rest}) {
                     setDataStatus("上传完毕");
                 }).catch(err => {
                     // 後端沒有擋擋名錯誤
-                    //console.log(err.response.data);
-                    alert('档名有误');
-                    alert("请重新上传！");
+                    setErrMsg(err.response.statusText);
                 })
 
-            }else{
-                alert('档名有误 请重新上传！');
+            } else {
+                setErrMsg("档名有误, 请重新上传！");
                 document.getElementById('contained-button-file').value = null;
             }
         } else {
@@ -110,61 +120,62 @@ export default function MapUpload({token, ...rest}) {
     
     return(
         <ThemeProvider theme={darkTheme}>
+            <AlertComponent open={alert} setOpen={setAlert} message={errmsg} severity={"error"}/>
             <Card >
-            <CardHeader title="车间 Layout 图上传" />
-            <Divider sx={{ borderBottomWidth: 3 }}/>
-            <CardContent>
-                <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    
-                }}
-                >
-                    <Upload fontSize="large"/>
-                </Box> 
-                <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    pt: 2
-                }}
-                >
-                    <label htmlFor="contained-button-file">
-                        <Input type="file" accept="image/png" id="contained-button-file"  onChange={handleFileChange} value=''/> 
-                        <LoadingButton
-                            color="success" 
-                            variant="contained" 
-                            size="large" 
-                            component="span" 
-                            startIcon={<CloudUploadOutlinedIcon sx={{mr:1}}/>}
-                            sx={{
-                                borderRadius: 4,
-                                minWidth: 200,
-                                justifyContent: 'center',
-                                letterSpacing: 3,
-                            }}
-                            type="input"
-                            loading={uploading}
-                            >
-                            {
-                                uploading ? "上传中..." : "选择档案" 
-                            }
-                        </LoadingButton>
-                    </label>
-                </Box>
-                <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    pt: 2
-                }}
-                >   
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        {dataStatus}
-                    </Typography>
-                </Box> 
-            </CardContent>
+                <CardHeader title="车间 Layout 图上传" />
+                <Divider sx={{ borderBottomWidth: 3 }}/>
+                <CardContent>
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        
+                    }}
+                    >
+                        <Upload fontSize="large"/>
+                    </Box> 
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        pt: 2
+                    }}
+                    >
+                        <label htmlFor="contained-button-file">
+                            <Input type="file" accept="image/png" id="contained-button-file"  onChange={handleFileChange} value=''/> 
+                            <LoadingButton
+                                color="success" 
+                                variant="contained" 
+                                size="large" 
+                                component="span" 
+                                startIcon={<CloudUploadOutlinedIcon sx={{mr:1}}/>}
+                                sx={{
+                                    borderRadius: 4,
+                                    minWidth: 200,
+                                    justifyContent: 'center',
+                                    letterSpacing: 3,
+                                }}
+                                type="input"
+                                loading={uploading}
+                                >
+                                {
+                                    uploading ? "上传中..." : "选择档案" 
+                                }
+                            </LoadingButton>
+                        </label>
+                    </Box>
+                    <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        pt: 2
+                    }}
+                    >   
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            {dataStatus}
+                        </Typography>
+                    </Box> 
+                </CardContent>
             </Card>
         </ThemeProvider>
         )

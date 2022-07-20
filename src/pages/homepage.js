@@ -16,9 +16,6 @@ import { Container,Snackbar,Box } from "@mui/material";
 
 import {DashboardLayout} from "../components/dashboard-layout";
 
-const PAGE_INDEX = {
-
-}
 
 export default function Homepage() {
     const DEBUG = false;

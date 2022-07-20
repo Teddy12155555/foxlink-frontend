@@ -15,15 +15,14 @@ import {
     Select,
     MenuItem,
 } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
 import ExcelTableView from "../components/excel-table-view";
 import { Parameter } from "../components/parameter";
+import { AlertComponent } from "../components/alert-component";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { Upload } from '../icons/upload';
-
 import { apiDevices, apiWorkShopList, apiDevicesData } from "../api.js";
 
 const CONTENT = {
@@ -75,9 +74,18 @@ export default function DevicesUpload({ token, ...rest }) {
 
     const [parameter, setParameter] = useState();
 
+    const [alert, setAlert] = useState(false);
+    const [errmsg, setErrMsg] = useState();
+
     useEffect(() => {
         updateData();
     }, [])
+
+    useEffect(()=>{
+        if(errmsg){
+            setAlert(true);
+        }
+    }, [errmsg])
 
     const updateData = () => {
         setUpload(false);
@@ -106,7 +114,7 @@ export default function DevicesUpload({ token, ...rest }) {
             setId2Word(newKeys);
             setDatas(res.data);
         }).catch(err => {
-
+            setErrMsg(err.response.statusText);
         })
     }
 
@@ -116,7 +124,6 @@ export default function DevicesUpload({ token, ...rest }) {
     }
 
     const handleFileChange = (e) => {
-
         if (e.target.files.length > 0) {
 
             setDataStatus(e.target.files[0].name);
@@ -133,7 +140,6 @@ export default function DevicesUpload({ token, ...rest }) {
             data['file'] = formData;
 
             apiDevices(data).then(res => {
-
                 if (res.status === 201) {
                     setUpload(false);
                     updateData();
@@ -161,8 +167,8 @@ export default function DevicesUpload({ token, ...rest }) {
                     setParameter(csv_data);
                 }
             }).catch(err => {
-                console.log(err.response.data);
-                alert("请重新上传！");
+                console.log(err);
+                setErrMsg("档案格式有误, 请重新上传！");
                 updateData();
             })
         } else {
@@ -172,6 +178,7 @@ export default function DevicesUpload({ token, ...rest }) {
 
     return (
         <ThemeProvider theme={darkTheme}>
+            <AlertComponent open={alert} setOpen={setAlert} message={errmsg} severity={"error"}/>
             <Card >
                 <CardHeader title="车间 Layout 座标表上传" />
                 <Divider sx={{ borderBottomWidth: 3 }} />

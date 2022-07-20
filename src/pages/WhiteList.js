@@ -68,6 +68,7 @@ const CONTENT = {
     title: "白名單",
     editTitle: "编辑白名單",
     device_cname: "装置名称",
+    device_id: "装置 ID",
     name: "員工姓名",
     id: "員工 ID",
     project : "专案",
@@ -95,7 +96,6 @@ export default function WhiteList({ token, ...rest }) {
     useEffect(() => {
         handleUpdate();
         return () => {
-
         }
     }, [])
     
@@ -187,7 +187,7 @@ export default function WhiteList({ token, ...rest }) {
             })
             Promise.all(promises).then(response => {
                 setDeviceSelect(response.map(item=>{
-                    return(<MenuItem key={item['id']} value={item['id']}>{`(${item["project"]}) ${item["name"]} 异常次数：${deviceRecommend[shift.toString()][item['id'].toString()]} `}</MenuItem>)
+                    return(<MenuItem key={item['id']} value={item['id']}>{`(${item["id"]}) ${item["name"]} 异常次数：${deviceRecommend[shift.toString()][item['id'].toString()]} `}</MenuItem>)
                 }))
             })
             
@@ -290,7 +290,7 @@ export default function WhiteList({ token, ...rest }) {
                             <TableHead sx={{ background: "#272d3a" }}>
                                 <TableRow>
                                     <TableCell>
-                                        {CONTENT.project}
+                                        {CONTENT.device_id}
                                     </TableCell>
                                     <TableCell>
                                         {CONTENT.device_cname}
@@ -315,7 +315,7 @@ export default function WhiteList({ token, ...rest }) {
                                         key={device.id}
                                         >
                                             <TableCell>
-                                                {device.project}
+                                                {device.id}
                                             </TableCell>
                                             <TableCell>
                                                 {device.name}

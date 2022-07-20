@@ -2,16 +2,21 @@ import React, { useState, useEffect, useRef } from "react";
 
 import {
   Box,
+  Skeleton,
   Grid,
   Button,
+  Typography,
+  TextField
 } from '@mui/material';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { DateRange } from "../components/dateRange.js";
 import { Rate } from "../components/rate.js";
 import { Emergency } from "../components/emergency.js";
 import { CrashedDevices } from "../components/crashed-devices.js";
 import { AcceptMissionEmployees } from "../components/accept-mission-employees.js";
-import { RejectMissionEmployees } from "../components/reject_mission_employees.js";
+import { RejectMissionEmployees } from "../components/reject-mission-employees.js";
 import { AbnormalMissions } from "../components/abnormal-missions.js";
 import { AbnormalDevices } from "../components/abnormal-devices.js";
 import { MissionNeedRepair } from "../components/mission-need-repair.js";
@@ -36,63 +41,44 @@ const darkTheme = createTheme({
 });
 
 export default function Status({ token, ...rest }) {
-  const UPDATE_SECOND = 5;
   const _isMounted = useRef(true);
-
   const [statusData, setData] = useState();
   const [missionData, setMissions] = useState();
-  const [timerId, setTimerId] = useState();
-  const [updateCount, setUpdateCount] = useState(UPDATE_SECOND);
 
+  const [sDate, setSDate] = useState();
+  const [eDate, setEDate] = useState();
+  const [shift, setShift] = useState(true);
+  
   useEffect(() => {
     updatedata();
-    setTimerId(startCount());
-
-    return () => {
-      window.clearInterval(timerId);
-    };
   }, [])
 
-  useEffect(() => {
-    if (updateCount == 0) {
-      stopCount(timerId);
-      setUpdateCount(UPDATE_SECOND);
-      setTimerId(startCount);
-    }
-
-    return () => {
-      window.clearInterval(timerId);
-    };
-  }, [updateCount])
-
-  const startCount = () => {
-    return window.setInterval(() =>
-      setUpdateCount(updateCount => updateCount - 1), 1000);
-  }
-  const stopCount = timerId => {
-    window.clearInterval(timerId);
-    updatedata();
-  }
   const updatedata = () => {
+    apiMissionNeedRepair(token).then(res => {
+      console.log(res.data);
+      setMissions(res.data);
+    })
     apiStatistics(null).then(res => {
       console.log(res.data);
       setData(res.data);
-    })
-    apiMissionNeedRepair(token).then(res => {
-      setMissions(res.data);
     })
   }
 
   return (
     <ThemeProvider theme={darkTheme}>
       {
-        statusData && missionData && 
+        statusData && 
         <Grid
         container
         spacing={3}
       >
-        <Grid item lg={12}>
-          <Button variant="outlined" onClick={updatedata}>更新资料</Button>
+        <Grid item xs={8}>
+          <DateRange sDate={sDate} eDate={eDate} setSDate={setSDate} setEDate={setEDate} shift={shift} setShift={setShift}/>
+        </Grid>
+        <Grid item xs={4} justifyContent={"center"}>
+          <Button size="large" variant="outlined" onClick={() => {
+            // query
+            }}>更新资料</Button>
         </Grid>
         <Grid
           item
@@ -106,8 +92,8 @@ export default function Status({ token, ...rest }) {
           lg={4}
         >
           {
-            statusData['login_users_percentage_this_week']
-            && (statusData['login_users_percentage_this_week'] == null ? <Rate rate={0} /> :
+            statusData
+            && (statusData['login_users_percentage_this_week'] == 0 ? <Rate rate={0} /> :
               <Rate rate={statusData['login_users_percentage_this_week']} />
             )
           }
@@ -163,13 +149,34 @@ export default function Status({ token, ...rest }) {
         <Grid
         item
         lg={4}
-         >
-           {
-            missionData &&
-            <MissionNeedRepair list_data={missionData} />
-           }
+        >
+          {
+            missionData ?  
+            (
+              <MissionNeedRepair list_data={missionData} />
+            ) : 
+            (
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  p: 8,
+                }}
+              >
+                <Skeleton
+                  sx={{ bgcolor: 'grey.900' }}
+                  variant="rectangular"
+                  width={1000}
+                  height={80}
+                >
+                  <Typography>.</Typography>
+                </Skeleton>
+              </Box>
+            )
+          }
         </Grid>
-      </Grid>
+        </Grid>
       }
     </ThemeProvider>
 

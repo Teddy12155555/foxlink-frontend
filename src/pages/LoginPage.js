@@ -62,13 +62,15 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
                             return;
                         }
                     }).catch(err =>{
-                        alert("权限不足");
+                        console.log(err);
+                        alert("网路连线异常");
                         return;
                     })
                 }
             }
         })
         .catch(err=> {
+            console.log(err);
             alert("帐密错误");
             document.getElementById('account').value = "";
             document.getElementById('password').value = "";
@@ -175,7 +177,6 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
         </Grid> 
              
     </ThemeProvider>
-       
     </>
   );
 }

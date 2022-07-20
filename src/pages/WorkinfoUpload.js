@@ -16,14 +16,13 @@ import {
     TableRow,
     TableCell
 } from '@mui/material';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 
 import { WorkExperiences } from "../components/worker-experiences";
 import { Parameter } from "../components/parameter";
+import { AlertComponent } from "../components/alert-component";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-
-import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { Upload } from '../icons/upload';
 
 import { apiWorkerinfos, apiWorkerAll } from "../api.js";
@@ -187,7 +186,7 @@ const infotable = (datas) => {
         </div>
     )
 }
-
+// Style component
 const Input = styled('input')({
     display: 'none',
 });
@@ -202,9 +201,18 @@ export default function WorkerinfoUpload({ token, ...rest }) {
 
     const [btnStatus, setBtn] = useState(true);
 
+    const [alert, setAlert] = useState(false);
+    const [errmsg, setErrMsg] = useState();
+
     useEffect(() => {
         UpdateData();
     }, [])
+
+    useEffect(()=>{
+        if(errmsg){
+            setAlert(true);
+        }
+    }, [errmsg])
 
     String.prototype.replaceAt = function (index, char) {
         var a = this.split("");
@@ -216,12 +224,12 @@ export default function WorkerinfoUpload({ token, ...rest }) {
         let data = {};
         data['token'] = token;
         apiWorkerAll(data).then(res => {
-            console.log(res.data);
+            //console.log(res.data);
             setData(res.data);
             setDataStatus("No file chosen !");
             setBtn(false);
         }).catch(err => {
-
+            setErrMsg(err.response.statusText);
         })
     }
 
@@ -250,6 +258,7 @@ export default function WorkerinfoUpload({ token, ...rest }) {
                     let rawdata = res.data.split(/\n/);
                     let processed_data = [];
                     let keys = []
+                    // Data processing
                     rawdata.map((line, i) => {
                         if (i == 0) {
                             keys = line.split(',');
@@ -284,8 +293,8 @@ export default function WorkerinfoUpload({ token, ...rest }) {
                     setParameter(csv_data)
                 }
             }).catch(err => {
-                //console.log(err.response.data);
-                alert("请重新上传！");
+                setErrMsg("档案格式有误, 请重新上传！");
+                console.log(err);
                 UpdateData();
             })
         } else {
@@ -297,6 +306,7 @@ export default function WorkerinfoUpload({ token, ...rest }) {
 
     return (
         <ThemeProvider theme={darkTheme}>
+            <AlertComponent open={alert} setOpen={setAlert} message={errmsg} severity={"error"}/>
             <Card >
                 <CardHeader title="员工专职表上传" />
                 <Divider sx={{ borderBottomWidth: 3 }} />
