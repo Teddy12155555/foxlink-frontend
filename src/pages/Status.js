@@ -45,41 +45,55 @@ export default function Status({ token, ...rest }) {
   const [statusData, setData] = useState();
   const [missionData, setMissions] = useState();
 
-  const [sDate, setSDate] = useState();
-  const [eDate, setEDate] = useState();
+  const [sDate, setSDate] = useState(new Date());
+  const [eDate, setEDate] = useState(new Date());
   const [shift, setShift] = useState(true);
   
   useEffect(() => {
-    updatedata();
+    //updatedata();
   }, [])
 
-  const updatedata = () => {
+  const updatedata = (data) => {
     apiMissionNeedRepair(token).then(res => {
-      console.log(res.data);
+      //console.log(res.data);
       setMissions(res.data);
     })
-    apiStatistics(null).then(res => {
-      console.log(res.data);
+    apiStatistics(data).then(res => {
+      //console.log(res.data);
       setData(res.data);
+    }).catch(err => {
+      console.log(err);
+      // need error handling
     })
+  }
+  const handleOnClick = () => {
+    const data = {
+      start: new Date(sDate).toISOString(),
+      end: new Date(eDate).toISOString()
+    }
+    updatedata(data);
   }
 
   return (
     <ThemeProvider theme={darkTheme}>
+      <Grid
+        container
+        spacing={3}
+        sx={{pb:5}}
+        >
+          <Grid item xs={8}>
+          <DateRange sDate={sDate} eDate={eDate} setSDate={setSDate} setEDate={setEDate} shift={shift} setShift={setShift}/>
+        </Grid>
+        <Grid item xs={4} justifyContent={"center"}>
+          <Button size="large" variant="outlined" onClick={handleOnClick}>更新资料</Button>
+        </Grid>
+      </Grid>
       {
         statusData && 
         <Grid
         container
         spacing={3}
-      >
-        <Grid item xs={8}>
-          <DateRange sDate={sDate} eDate={eDate} setSDate={setSDate} setEDate={setEDate} shift={shift} setShift={setShift}/>
-        </Grid>
-        <Grid item xs={4} justifyContent={"center"}>
-          <Button size="large" variant="outlined" onClick={() => {
-            // query
-            }}>更新资料</Button>
-        </Grid>
+        >
         <Grid
           item
           lg={4}

@@ -3,7 +3,7 @@ import React from "react";
 import { Avatar, Box, Card, CardContent, Grid, LinearProgress, Typography, TextField, Stack, Switch, SwitchProps } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';
 
 export const DateRange = ({sDate, eDate, setSDate, setEDate, shift, setShift}) => {
@@ -34,18 +34,17 @@ export const DateRange = ({sDate, eDate, setSDate, setEDate, shift, setShift}) =
           </Grid>
           <Box sx={{ pt: 4 }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
+                <DateTimePicker
                   label="开始日期"
                   value={sDate}
                   onChange={(newValue) => {
                     setSDate(newValue);
-                    //console.log(newValue);
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
+              <DateTimePicker
                 label="结束日期"
                 value={eDate}
                 onChange={(newValue) => {

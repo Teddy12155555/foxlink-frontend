@@ -20,7 +20,7 @@ export const apiUserLevel = (token) => baseRequest.get('/users/info', {
     }
 });
 
-export const apiStatistics = (data) => baseRequest.get('/stats', {
+export const apiStatistics = (data) => baseRequest.get(`/stats/?start_date=${data['start']}&end_date=${data['end']}`, {
   headers:
     {
         'accept': 'application/json',
@@ -29,7 +29,12 @@ export const apiStatistics = (data) => baseRequest.get('/stats', {
 
 });
 
-export const apiWorkStatus = (data) => baseRequest.get('/stats/worker-status', {
+/*
+*
+* FQ-9%E8%BB%8A%E9%96%93 新改 ＡＰＩ
+*
+*/
+export const apiWorkStatus = (data) => baseRequest.get('/stats/FQ-9%E8%BB%8A%E9%96%93/worker-status', {
   headers:
     {
         'accept': 'application/json',
