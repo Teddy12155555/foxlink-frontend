@@ -14,7 +14,9 @@ import {
     TableHead,
     TableBody,
     TableRow,
-    TableCell
+    TableCell,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
@@ -22,6 +24,7 @@ import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { WorkExperiences } from "../components/worker-experiences";
 import { Parameter } from "../components/parameter";
 import { AlertComponent } from "../components/alert-component";
+import { WorkshopPicker } from "../components/workshop-picker.js";
 
 import { Upload } from '../icons/upload';
 
@@ -60,7 +63,6 @@ const infotable = (datas) => {
     let keys = ["username", "full_name", "workshop", "level", "shift", "superior", "experiences"]
     return (
         <div>
-            <Divider sx={{ borderBottomWidth: 3, m: 3 }} />
             <Table >
                 <TableHead>
                     <TableRow>
@@ -121,7 +123,6 @@ const infotable = (datas) => {
                     }
                 </TableBody>
             </Table>
-
             <Divider sx={{ borderBottomWidth: 3, m: 3 }} />
             <Table >
                 <TableHead>
@@ -192,7 +193,7 @@ const Input = styled('input')({
 });
 
 export default function WorkerinfoUpload({ token, ...rest }) {
-    const [dataStatus, setDataStatus] = useState("正在加载现有资料 ....");
+    const [dataStatus, setDataStatus] = useState("No File Chosen");
     const [uploading, setUpload] = useState(false);
 
     const [data, setData] = useState();
@@ -203,6 +204,8 @@ export default function WorkerinfoUpload({ token, ...rest }) {
 
     const [alert, setAlert] = useState(false);
     const [errmsg, setErrMsg] = useState();
+
+    const [workshop, setWorkshop] = useState("");
 
     useEffect(() => {
         UpdateData();
@@ -352,15 +355,31 @@ export default function WorkerinfoUpload({ token, ...rest }) {
                         </label>
                     </Box>
                     <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            pt: 2
-                        }}
-                    >
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        pt: 2
+                    }}
+                    >   
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                             {dataStatus}
                         </Typography>
+                    </Box>
+                    <Divider sx={{ borderBottomWidth: 3, m: 3 }} />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            m: 2
+                        }}
+                    >
+                        <Typography sx={{ m: 1 }}>
+                            现有资料 :
+                        </Typography>
+                        <FormControl >
+                            <InputLabel id="demo-simple-select-label">WorkShop</InputLabel>
+                            <WorkshopPicker token={token} workshop={workshop} setWorkshop={setWorkshop} />
+                        </FormControl>
                     </Box>
                     {
                         parameter && (
@@ -371,7 +390,6 @@ export default function WorkerinfoUpload({ token, ...rest }) {
                                     pt: 2
                                 }}
                             >
-                                <Divider sx={{ borderBottomWidth: 3 }} />
                                 <Parameter csv_data={parameter} />
                             </Box>
                         )

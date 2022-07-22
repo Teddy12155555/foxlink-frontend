@@ -18,9 +18,6 @@ import {  Typography, Container, InputLabel, MenuItem, Select,FormControl } from
 
 import { apiGetWhiteList, apiGetDeviceNameById, apiWorkShopList, apiGetDeviceRecommend, apiGetWorkersByDevice, apiPostAddWorkersWhitelist, apiDeleteWorkersWhitelist} from "../api.js";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-import { Message } from "@mui/icons-material";
-
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',

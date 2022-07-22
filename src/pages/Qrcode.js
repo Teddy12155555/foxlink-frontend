@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { saveAs } from 'file-saver';
 
-import { Box, Card, CardContent, CardHeader, Divider, Typography, createTheme, TextField, ThemeProvider,InputLabel, MenuItem, Select,FormControl } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Divider, Typography, createTheme, ThemeProvider,InputLabel, MenuItem, Select,FormControl } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { QRCode as QRCodeIcon } from '../icons/qrcode';
+import { WorkshopPicker } from "../components/workshop-picker.js";
 
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
-import {apiWorkShopList, apiQRCode} from "../api.js";
+import { apiQRCode } from "../api.js";
 
 const darkTheme = createTheme({
     palette: {
@@ -34,24 +35,6 @@ const darkTheme = createTheme({
 export default function QrcodeDownload({token, ...rest}) {
     const [downloading, setDownload] = useState(false);
     const [workshop, setWorkshop] = useState("");
-    
-    const [selectItem, setSelectItem] = useState("");
-
-    let displayWorkShop = "";
-
-    useEffect(()=> {
-        apiWorkShopList(token).then(res => {
-            setSelectItem(res.data.map(name=>{
-                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
-            }))
-        }).catch(err => {
-
-        });
-    }, [])
-
-    const handleChange = (event) => {
-        setWorkshop(event.target.value)
-    }
 
     const qrCodeHandler = () => {
         //let data = `grant_type=&username=${account}&password=${password}&scope=&client_id=&client_secret=`
@@ -109,17 +92,7 @@ export default function QrcodeDownload({token, ...rest}) {
                     >
                         <FormControl >
                                 <InputLabel id="demo-simple-select-label">WorkShop</InputLabel>
-                                <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={workshop}
-                                label="WorkShop"
-                                onChange={handleChange}
-                                >
-                                    {
-                                        selectItem
-                                    }
-                                </Select>
+                                <WorkshopPicker token={token} workshop={workshop} setWorkshop={setWorkshop} />
                                 <LoadingButton
                                     onClick={qrCodeHandler}
                                     endIcon={<ArrowCircleDownIcon color="white"/>}

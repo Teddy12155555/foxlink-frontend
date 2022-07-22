@@ -13,12 +13,13 @@ import {
     createTheme,
     ThemeProvider,
     Divider,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 
 import { SeverityPill } from '../components/severity-pill';
-
 import { apiWorkStatus } from "../api.js";
-import { sort } from "d3";
+import { WorkshopPicker } from "../components/workshop-picker.js";
 
 const darkTheme = createTheme({
     palette: {
@@ -76,26 +77,29 @@ const CONTENT = {
     update: "更新资料"
 }
 
-export default function AllStatus({ authed, ...rest }) {
+export default function AllStatus({ token, ...rest }) {
     const [statusData, setData] = useState([]);
     const [sortStatus, setSort] = useState("none");
+    const [workshop, setWorkshop] = useState("");
 
     useEffect(() => {
         updataData("none");
         setSort("none");
         return () => {
         }
-    }, [])
+    }, [workshop])
 
     const handleUpdate = () => {
         updataData("none");
     }
  
     const updataData = (sort) => {
-        apiWorkStatus(null).then(res => {
+        apiWorkStatus(workshop).then(res => {
             setData(parseData(res.data, sort).sort(function(a, b){
                 return b.sort - a.sort;
             }));
+        }).catch(err=> {
+            alert("请选取车间");
         })
     }
 
@@ -167,19 +171,27 @@ export default function AllStatus({ authed, ...rest }) {
         <ThemeProvider theme={darkTheme}>
             <Card >
                 <CardHeader title={CONTENT.title}
-                    action={(<Button
+                    action={(
+                    <FormControl >
+                        <InputLabel id="demo-simple-select-label">WorkShop</InputLabel>
+                        <WorkshopPicker token={token} workshop={workshop} setWorkshop={setWorkshop} />
+                        <Button
                         color="primary"
                         size="large"
                         variant="text"
                         onClick={handleUpdate}
-                        sx={{ mr: 3 }}
-                    >
-                        {CONTENT.update}
-                    </Button>)} />
-
+                        sx={{ mr: 3 , ml: 3}}
+                        
+                        >
+                            {CONTENT.update}
+                        </Button>
+                    </FormControl>)} 
+                />
                 <Divider sx={{ borderBottomWidth: 3 }} />
                 <PerfectScrollbar>
-                    <Box sx={{ minWidth: 800 }}>
+                    {
+                        workshop && 
+                        <Box sx={{ minWidth: 800 }}>
                         <Table>
                             <TableHead sx={{ background: "#272d3a" }}>
                                 <TableRow>
@@ -253,6 +265,7 @@ export default function AllStatus({ authed, ...rest }) {
                             </TableBody>
                         </Table>
                     </Box>
+                    }
                 </PerfectScrollbar>
 
             </Card>

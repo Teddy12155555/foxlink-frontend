@@ -117,7 +117,6 @@ export default function DevicesUpload({ token, ...rest }) {
             setErrMsg(err.response.statusText);
         })
     }
-
     const handleWorkshopChange = (event) => {
         setWorkshop(event.target.value);
         fetchData(event.target.value);

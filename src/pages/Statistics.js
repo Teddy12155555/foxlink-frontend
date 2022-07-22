@@ -2,16 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 
 import {
   Box,
+  Card,
   Skeleton,
   Grid,
   Button,
   Typography,
-  TextField
+  FormControl,
+  InputLabel
 } from '@mui/material';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { DateRange } from "../components/dateRange.js";
+import { DateRange } from "../components/date-range.js";
 import { Rate } from "../components/rate.js";
 import { Emergency } from "../components/emergency.js";
 import { CrashedDevices } from "../components/crashed-devices.js";
@@ -20,6 +22,7 @@ import { RejectMissionEmployees } from "../components/reject-mission-employees.j
 import { AbnormalMissions } from "../components/abnormal-missions.js";
 import { AbnormalDevices } from "../components/abnormal-devices.js";
 import { MissionNeedRepair } from "../components/mission-need-repair.js";
+import { WorkshopPicker } from "../components/workshop-picker.js";
 
 import { apiStatistics, apiMissionNeedRepair } from "../api.js";
 
@@ -44,6 +47,7 @@ export default function Status({ token, ...rest }) {
   const _isMounted = useRef(true);
   const [statusData, setData] = useState();
   const [missionData, setMissions] = useState();
+  const [workshop, setWorkshop] = useState("");
 
   const [sDate, setSDate] = useState(new Date());
   const [eDate, setEDate] = useState(new Date());
@@ -57,11 +61,16 @@ export default function Status({ token, ...rest }) {
     apiMissionNeedRepair(token).then(res => {
       //console.log(res.data);
       setMissions(res.data);
+    }).catch(err => {
+      console.log(err);
     })
     apiStatistics(data).then(res => {
       //console.log(res.data);
       setData(res.data);
     }).catch(err => {
+      if(workshop === ""){
+        alert("请选取车间");
+      }
       console.log(err);
       // need error handling
     })
@@ -69,7 +78,8 @@ export default function Status({ token, ...rest }) {
   const handleOnClick = () => {
     const data = {
       start: new Date(sDate).toISOString(),
-      end: new Date(eDate).toISOString()
+      end: new Date(eDate).toISOString(),
+      workshop: workshop
     }
     updatedata(data);
   }
@@ -82,10 +92,18 @@ export default function Status({ token, ...rest }) {
         sx={{pb:5}}
         >
           <Grid item xs={8}>
-          <DateRange sDate={sDate} eDate={eDate} setSDate={setSDate} setEDate={setEDate} shift={shift} setShift={setShift}/>
-        </Grid>
+            <DateRange sDate={sDate} eDate={eDate} setSDate={setSDate} setEDate={setEDate} shift={shift} setShift={setShift}/>
+          </Grid>
         <Grid item xs={4} justifyContent={"center"}>
-          <Button size="large" variant="outlined" onClick={handleOnClick}>更新资料</Button>
+          <Card >
+            <Box>
+              <FormControl sx={{mt:3, mb:3, mr:3, ml: 3}}>
+                  <InputLabel id="demo-simple-select-label" >WorkShop</InputLabel>
+                  <WorkshopPicker token={token} workshop={workshop} setWorkshop={setWorkshop} />
+              </FormControl>
+              <Button sx={{mt:3, mb:3}} size="large"  variant="contained" onClick={handleOnClick}>更新资料</Button>
+            </Box>
+          </Card>
         </Grid>
       </Grid>
       {

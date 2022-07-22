@@ -71,7 +71,12 @@ const Login = ({setAuth, authed, setUser, setIdx, setOpen, setToken, ...rest}) =
         })
         .catch(err=> {
             console.log(err);
-            alert("帐密错误");
+            if(err.response.status == 401){
+                alert("帐密错误");
+            } else if (err.response.status == 422){
+                alert("验证错误，请重试");
+            }
+            
             document.getElementById('account').value = "";
             document.getElementById('password').value = "";
     })

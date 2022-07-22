@@ -52,33 +52,15 @@ const Input = styled('input')({
 export default function MapUpload({token, ...rest}) {
     const [dataStatus, setDataStatus] = useState(" No File Chosen");
     const [uploading, setUpload] = useState(false);
-    // init workshop
-    const [selectItem, setSelectItem] = useState("");
-    const [workshop, setWorkshop] = useState("");
     
     const [alert, setAlert] = useState(false);
     const [errmsg, setErrMsg] = useState();
-
-    useEffect(()=>{
-        updateData();
-    }, [])
 
     useEffect(()=>{
         if(errmsg){
             setAlert(true);
         }
     }, [errmsg])
-
-    const updateData = () => {
-        setWorkshop(null);
-        apiWorkShopList(token).then(res => {
-            setSelectItem(res.data.map(name=>{
-                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
-            }))
-        }).catch(err => {
-            setErrMsg(err.response.statusText);
-        });
-    }
 
     const handleFileChange = (e) => {
         if(e.target.files.length > 0){
@@ -102,7 +84,6 @@ export default function MapUpload({token, ...rest}) {
                 
                 apiMapPost(data).then(res=>{
                     setUpload(false);
-                    updateData();
                     setDataStatus("上传完毕");
                 }).catch(err => {
                     // 後端沒有擋擋名錯誤

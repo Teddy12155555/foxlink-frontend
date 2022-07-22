@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Login from './LoginPage';
-import Status from "./Status";
+import Status from "./Statistics";
 import AllStatus from "./AllStatus";
 import QrcodeDownload from "./Qrcode";
 import Map from "./Map";
@@ -43,7 +43,7 @@ export default function Homepage() {
 
     const conditionalRender = (idx) => {
         switch(idx) {
-            case -1: return (<AllStatus authed={authed} />);
+            case -1: return (<AllStatus token={token} />);
             case 0: return(<WorkerinfoUpload token={token}/>);
             case 1: return(<DevicesUpload token={token}/>);
             case 2: return(<EventbookUpload token={token} />); // not used, only for testing

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-
-import { saveAs } from 'file-saver';
+import React, { useState } from "react";
 
 import { Box, Card, CardContent, CardHeader, Divider, Typography, createTheme, Container, ThemeProvider,InputLabel, MenuItem, Select,FormControl } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -8,8 +6,9 @@ import MapIcon from '@mui/icons-material/Map';
 
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
-import {apiWorkShopList, apiMapGet} from "../api.js";
-import { width } from "@mui/system";
+import { apiMapGet } from "../api.js";
+
+import { WorkshopPicker } from "../components/workshop-picker.js";
 
 const darkTheme = createTheme({
     palette: {
@@ -33,28 +32,12 @@ const darkTheme = createTheme({
 export default function Map({token, ...rest}) {
   const [downloading, setDownload] = useState(false);
     const [workshop, setWorkshop] = useState("");
-    
-    const [selectItem, setSelectItem] = useState("");
     const [img, setImg] = useState();
 
-    let displayWorkShop = "";
     const style = {
         'minWidth': '100%',
         'maxWidth': '100%'
-      };
-    useEffect(()=> {
-        apiWorkShopList(token).then(res => {
-            setSelectItem(res.data.map(name=>{
-                return(<MenuItem key={name} value={name}>{name}</MenuItem>)
-            }))
-        }).catch(err => {
-
-        });
-    }, [])
-
-    const handleChange = (event) => {
-        setWorkshop(event.target.value)
-    }
+    };
 
     const arrayBufferToBase64 = (buffer) =>  {
       var binary = '';
@@ -121,7 +104,8 @@ export default function Map({token, ...rest}) {
                     >
                         <FormControl >
                                 <InputLabel id="demo-simple-select-label">WorkShop</InputLabel>
-                                <Select
+                                <WorkshopPicker token={token} workshop={workshop} setWorkshop={setWorkshop} />
+                                {/* <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 value={workshop}
@@ -131,7 +115,7 @@ export default function Map({token, ...rest}) {
                                     {
                                         selectItem
                                     }
-                                </Select>
+                                </Select> */}
                                 <LoadingButton
                                     onClick={mapHandler}
                                     endIcon={<ArrowCircleDownIcon color="white"/>}
