@@ -133,7 +133,7 @@ export const apiWorkerinfos = (data) => baseRequest.post('/migration/factory-wor
     'Authorization' : `Bearer ${data['token']}`
   }
 });
-export const apiWorkerAll = (data) => baseRequest.get('/users/overview', 
+export const apiWorkerAll = (data) => baseRequest.get(`/users/overview?workshop_name=${data['workshop']}`, 
 {
   headers:
     {

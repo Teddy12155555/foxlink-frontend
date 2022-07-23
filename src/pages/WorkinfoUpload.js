@@ -200,7 +200,7 @@ export default function WorkerinfoUpload({ token, ...rest }) {
 
     const [parameter, setParameter] = useState();
 
-    const [btnStatus, setBtn] = useState(true);
+    const [btnStatus, setBtn] = useState(false);
 
     const [alert, setAlert] = useState(false);
     const [errmsg, setErrMsg] = useState();
@@ -208,8 +208,11 @@ export default function WorkerinfoUpload({ token, ...rest }) {
     const [workshop, setWorkshop] = useState("");
 
     useEffect(() => {
-        UpdateData();
-    }, [])
+        //UpdateData();
+        if(workshop != ""){
+            UpdateData();
+        }
+    }, [workshop])
 
     useEffect(()=>{
         if(errmsg){
@@ -224,10 +227,12 @@ export default function WorkerinfoUpload({ token, ...rest }) {
     }
 
     const UpdateData = () => {
+        setBtn(true);
+        setDataStatus("Loading ...");
         let data = {};
         data['token'] = token;
+        data['workshop'] = workshop;
         apiWorkerAll(data).then(res => {
-            //console.log(res.data);
             setData(res.data);
             setDataStatus("No file chosen !");
             setBtn(false);
