@@ -25,6 +25,7 @@ import { MissionNeedRepair } from "../components/mission-need-repair.js";
 import { WorkshopPicker } from "../components/workshop-picker.js";
 
 import { apiStatistics, apiMissionNeedRepair } from "../api.js";
+import { set } from "date-fns";
 
 const darkTheme = createTheme({
   palette: {
@@ -58,6 +59,8 @@ export default function Status({ token, ...rest }) {
   }, [])
 
   const updatedata = (data) => {
+    setData(null);
+    setMissions(null);
     apiMissionNeedRepair(token).then(res => {
       //console.log(res.data);
       setMissions(res.data);
@@ -81,6 +84,7 @@ export default function Status({ token, ...rest }) {
       end: new Date(eDate).toISOString(),
       workshop: workshop
     }
+    console.log(data);
     updatedata(data);
   }
 
