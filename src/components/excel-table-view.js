@@ -33,13 +33,31 @@ export default function ExcelTableView({ keys, datas, id2words, ...rest }) {
                             <TableRow key={i + 1}>
                                 {
                                     keys.map((key, j) => {
-                                        return (
-                                            <TableCell sx={{ minWidth: "100%" }} key={key} >
-                                                {
-                                                    data[key]
-                                                }
-                                            </TableCell>
-                                        )
+                                        if(data[key] === true){
+                                            return (
+                                                <TableCell sx={{ minWidth: "100%" }} key={key} >
+                                                    {
+                                                        "是"
+                                                    }
+                                                </TableCell>
+                                            )
+                                        }else if(data[key] === false){
+                                            return (
+                                                <TableCell sx={{ minWidth: "100%" }} key={key} >
+                                                    {
+                                                        "否"
+                                                    }
+                                                </TableCell>
+                                            )
+                                        }else{
+                                            return (
+                                                <TableCell sx={{ minWidth: "100%" }} key={key} >
+                                                    {
+                                                        data[key]
+                                                    }
+                                                </TableCell>
+                                            )
+                                        }
                                     })
                                 }
                             </TableRow>

@@ -105,11 +105,13 @@ export default function DevicesUpload({ token, ...rest }) {
             token: token
         }
         apiDevicesData(data).then(res => {
+            
             let keys = Object.keys(res.data[0]);
             let newKeys = []
             keys.map(key => {
                 newKeys.push(CONTENT[key]);
             })
+            console.log(newKeys);
             setKeys(keys);
             setId2Word(newKeys);
             setDatas(res.data);
